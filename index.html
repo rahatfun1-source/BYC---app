@@ -763,5 +763,187 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+<script id="byc-sync">
+/* BYC অনলাইন সিঙ্ক (Firebase Realtime Database) */
+(function () {
+  var CFG = {
+    apiKey: "AIzaSyAR6CLhYZoktHxxbYkgxcS9ktgghnajB20",
+    authDomain: "byc-app-255ae.firebaseapp.com",
+    databaseURL: "https://byc-app-255ae-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "byc-app-255ae",
+    storageBucket: "byc-app-255ae.firebasestorage.app",
+    messagingSenderId: "573050964665",
+    appId: "1:573050964665:web:bebe7df65d0a963ed86968"
+  };
+  var SDK = window.BYC_SDK_BASE || "https://www.gstatic.com/firebasejs/13.4.0/";
+
+  var G = ["members", "funds", "posts", "admins"];
+  var S = ["notices", "donors", "spent", "a", "b", "teams", "cp", "rst", "loans", "dons", "pend", "news", "ads", "m", "cr"];
+  var R = ["users", "fr", "msgs"];
+  var ALL = G.concat(S, R);
+
+  var db, fb, ready = false, applying = false, last = {}, timer = null, retry = null;
+
+  /* ---------- অবস্থা চিহ্ন ---------- */
+  var dot = document.createElement("div");
+  dot.style.cssText = "position:fixed;top:6px;left:6px;z-index:99999;font:700 10px/1 sans-serif;padding:3px 6px;border-radius:9px;background:#8A93B8;color:#fff;opacity:.85;pointer-events:none";
+  dot.textContent = "● সংযোগ…";
+  document.body.appendChild(dot);
+  function status(k) {
+    var m = { on: ["#18A058", "● অনলাইন"], off: ["#8A93B8", "● অফলাইন"], err: ["#D83A3A", "● সিঙ্ক ত্রুটি"], load: ["#8A93B8", "● সংযোগ…"] }[k];
+    dot.style.background = m[0]; dot.textContent = m[1];
+  }
+
+  /* ---------- ডাটা পড়া/লেখার সহায়ক ---------- */
+  function get(k) { return G.indexOf(k) >= 0 ? window[k] : st[k]; }
+  function put(k, v) { if (G.indexOf(k) >= 0) window[k] = v; else st[k] = v; }
+  function idx(o) { return members.indexOf(o); }
+  function J(x) { var s = JSON.stringify(x === undefined ? null : x); return s === undefined ? "null" : s; }
+
+  function itemStr(k, x) {
+    if (k === "users" && Array.isArray(x)) { var u = x.slice(); u[3] = idx(x[3]); return J(u); }
+    if ((k === "fr" || k === "msgs") && x) { var o = Object.assign({}, x); o.f = idx(x.f); o.t = idx(x.t); return J(o); }
+    return J(x);
+  }
+  function itemVal(k, s) {
+    var v = JSON.parse(s);
+    if (k === "users" && Array.isArray(v)) { v[3] = v[3] >= 0 ? members[v[3]] : undefined; }
+    if ((k === "fr" || k === "msgs") && v) { v.f = members[v.f]; v.t = members[v.t]; }
+    return v;
+  }
+  function enc(k) {
+    var v = get(k);
+    if (Array.isArray(v)) return { items: v.map(function (x) { return itemStr(k, x); }) };
+    return { s: J(v) };
+  }
+  function packAll() { var o = {}; ALL.forEach(function (k) { if (get(k) !== undefined) o[k] = enc(k); }); return o; }
+  function pad(i) { return "i" + ("000000" + i).slice(-6); }
+
+  function diff(cur, prev) {
+    var u = {}, n = 0;
+    Object.keys(cur).forEach(function (k) {
+      var c = cur[k], p = prev[k];
+      if (c.items) {
+        c.items.forEach(function (s, i) {
+          if (!p || !p.items || p.items[i] !== s) { u["a/" + k + "/" + pad(i)] = s; n++; }
+        });
+        if (p && p.items) for (var i = c.items.length; i < p.items.length; i++) { u["a/" + k + "/" + pad(i)] = null; n++; }
+      } else if (!p || p.s !== c.s) { u["v/" + k] = c.s; n++; }
+    });
+    return n ? u : null;
+  }
+
+  /* ---------- লোকাল → অনলাইন ---------- */
+  function flush() {
+    if (!ready || applying) return;
+    var cur = packAll(), u = diff(cur, last);
+    if (!u) return;
+    var prev = last; last = cur;
+    fb.update(fb.ref(db, "byc"), u).then(function () { status("on"); }).catch(function (e) {
+      last = prev; status("err"); try { console.warn("sync error", e); } catch (_) {}
+    });
+  }
+  function schedule() { clearTimeout(timer); timer = setTimeout(flush, 400); }
+
+  /* ---------- অনলাইন → লোকাল ---------- */
+  function setInPlace(arr, i, val) {
+    var old = arr[i];
+    if (Array.isArray(old) && Array.isArray(val)) { old.length = 0; val.forEach(function (x) { old.push(x); }); }
+    else if (old && val && typeof old === "object" && typeof val === "object" && !Array.isArray(old) && !Array.isArray(val)) {
+      Object.keys(old).forEach(function (p) { delete old[p]; });
+      Object.keys(val).forEach(function (p) { old[p] = val[p]; });
+    } else arr[i] = val;
+  }
+  function parseRemote(val) {
+    var r = { v: (val && val.v) || {}, a: {} };
+    var a = (val && val.a) || {};
+    Object.keys(a).forEach(function (k) {
+      var o = a[k] || {};
+      r.a[k] = Object.keys(o).sort().map(function (p) { return o[p]; });
+    });
+    return r;
+  }
+  function busy() {
+    var e = document.activeElement;
+    return e && /^(INPUT|TEXTAREA|SELECT)$/.test(e.tagName);
+  }
+  function rerender() {
+    if (busy()) { clearTimeout(retry); retry = setTimeout(rerender, 1500); return; }
+    var sv = sel.value;
+    try {
+      if (sel.options.length !== members.length || members.some(function (m, i) { return sel.options[i] && sel.options[i].textContent !== m.n; })) {
+        rebuildSel(); if (Number(sv) < members.length) sel.value = sv;
+      }
+    } catch (e) {}
+    try { applyAll(); } catch (e) { console.warn(e); }
+    try { card(); } catch (e) {}
+  }
+  function applyRemote(val) {
+    var r = parseRemote(val), changed = false;
+    applying = true;
+    try {
+      ALL.forEach(function (k) {
+        var cur = get(k), c = Array.isArray(cur);
+        if (c || r.a[k] || (cur === undefined && r.a[k])) {
+          var items = r.a[k] || [];
+          if (!c) { cur = []; put(k, cur); }
+          var local = enc(k).items;
+          if (local.length === items.length && local.every(function (s, i) { return s === items[i]; })) return;
+          items.forEach(function (s, i) {
+            if (local[i] === s) return;
+            var v = itemVal(k, s);
+            if (i < cur.length) setInPlace(cur, i, v); else cur.push(v);
+          });
+          cur.length = items.length;
+          changed = true;
+        } else if (r.v[k] !== undefined) {
+          if (enc(k).s !== r.v[k]) { put(k, JSON.parse(r.v[k])); changed = true; }
+        }
+      });
+    } finally { applying = false; }
+    /* আমাদের জানা অবস্থা = অনলাইনে যা আছে (যে কী অনলাইনে নেই সেগুলো পরে লেখা হবে) */
+    var now = packAll(); last = {};
+    ALL.forEach(function (k) {
+      if (!now[k]) return;
+      if (now[k].items || r.v[k] !== undefined) last[k] = now[k];
+    });
+    if (changed) rerender();
+    flush(); // অনলাইনে না থাকা কিছু থাকলে এখন লেখা হবে
+  }
+
+  function onData(snap) {
+    var val = snap.val();
+    status("on");
+    if (!val || !val.init) {           // প্রথমবার: বর্তমান ডাটা দিয়ে ডাটাবেস শুরু
+      ready = true; last = {};
+      var cur = packAll(), u = diff(cur, {}) || {};
+      u.init = 1; last = cur;
+      fb.update(fb.ref(db, "byc"), u).catch(function (e) { last = {}; status("err"); console.warn(e); });
+      return;
+    }
+    if (ready) {                        // নিজের অসেভ পরিবর্তন থাকলে আগে সেটা পাঠাও
+      var c2 = packAll();
+      if (diff(c2, last)) { flush(); return; }
+    }
+    ready = true;
+    applyRemote(val);
+  }
+
+  /* ---------- শুরু ---------- */
+  ["click", "change", "input", "keyup", "touchend", "submit"].forEach(function (ev) {
+    document.addEventListener(ev, schedule, true);
+  });
+  setInterval(function () { if (!document.hidden) flush(); }, 5000);
+  document.addEventListener("visibilitychange", function () { if (document.hidden) flush(); });
+  window.addEventListener("online", function () { status("on"); schedule(); });
+  window.addEventListener("offline", function () { status("off"); });
+
+  Promise.all([import(SDK + "firebase-app.js"), import(SDK + "firebase-database.js")]).then(function (m) {
+    var app = m[0].initializeApp(CFG);
+    fb = m[1]; db = fb.getDatabase(app);
+    fb.onValue(fb.ref(db, "byc"), onData, function (e) { status("err"); console.warn(e); });
+  }).catch(function (e) { status("off"); console.warn("Firebase লোড হয়নি", e); });
+})();
+</script>
 </body>
 </html>
