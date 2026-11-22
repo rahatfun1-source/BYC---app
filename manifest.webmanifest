@@ -1,13 +1,12 @@
 {
  "name": "বিরোপাড়া তরুন সংঘ (BYC)",
  "short_name": "BYC",
- "start_url": "./",
+ "lang": "bn",
+ "start_url": "./index.html",
  "scope": "./",
  "display": "standalone",
- "orientation": "portrait",
  "background_color": "#14213D",
  "theme_color": "#14213D",
- "lang": "bn",
  "icons": [
   {
    "src": "icon-192.png",
@@ -20,6 +19,12 @@
    "sizes": "512x512",
    "type": "image/png",
    "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
   }
  ]
 }
