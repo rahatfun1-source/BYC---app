@@ -706,7 +706,7 @@ fd.onclick=function(e){_o8(e);var t=e.target,d=t.dataset,g=function(i){return do
  if(t.id==="aiGo"&&st.admin){v=g("aI").value.trim().toLowerCase();if(/^[a-z0-9_]{4,20}$/.test(v)){st.aid=v;fdraw()}}};
 /* certificate: own name only */
 var _c2=cert2;
-cert2=function(){var g=function(i){return document.getElementById(i)};if(st.me&&!st.admin){g("cName").value=st.me.n;g("cName").readOnly=true}else g("cName").readOnly=false;g("cf").style.display=st.admin?"none":"";var nt=g("cNote");if(!nt){nt=document.createElement("p");nt.id="cNote";nt.className="note";nt.textContent="সার্টিফিকেট শুধু সদস্য নিজের প্রোফাইল থেকে নিজের নামে তৈরি করতে পারেন।";g("cName").parentNode.insertBefore(nt,g("cName"))}nt.style.display=st.admin?"":"none";_c2()};
+cert2=function(){var g=function(i){return document.getElementById(i)};if(st.me&&!st.admin){g("cName").value=st.me.n;g("cName").readOnly=true}else g("cName").readOnly=false;g("cf").style.display=st.admin?"none":"";var nt=g("cNote");if(!nt){nt=document.createElement("p");nt.id="cNote";nt.className="note";nt.textContent="সার্টিফিকেট শুধু অ্যাডমিন তৈরি করে দিতে পারেন।";g("cName").parentNode.insertBefore(nt,g("cName"))}nt.style.display=st.admin?"":"none";_c2()};
 ["cName","cEv"].forEach(function(i){document.getElementById(i).oninput=cert2});["cType","cPos"].forEach(function(i){document.getElementById(i).onchange=cert2});
 document.getElementById("cDl").onclick=function(){var b=this;if(typeof html2canvas==="undefined"){b.textContent="এই ব্রাউজারে হচ্ছে না, প্রিন্ট ব্যবহার করুন";return}html2canvas(document.getElementById("cf"),{scale:2,backgroundColor:"#ffffff"}).then(function(c){var a=document.createElement("a");a.href=c.toDataURL("image/png");a.download="BYC-certificate.png";document.body.appendChild(a);a.click();a.remove()})};
 /* applyAll extras */
@@ -1607,7 +1607,7 @@ pf.addEventListener("click",function(e){var id=e.target.id,m=me();
  if(id==="pfSv"){var n=g("pfN").value.trim();if(n.length<2){g("pfS").textContent="নাম দিন";return}
   m.n=n;if(st.mu)st.mu[2]=n;st.user=n;m.fb=g("pfFb").value.trim();m.wa=toen(g("pfWa").value.trim());m.bk=toen(g("pfBk").value.trim());m.em=g("pfEm").value.trim().toLowerCase();
   g("pfS").textContent="✔ সংরক্ষিত হয়েছে";if(typeof rebuildSel==="function"){var c=sel.value;rebuildSel();sel.value=c}}
- if(id==="pfSet"){g("pfS").textContent="সেটিং শীঘ্রই আসছে";}
+ if(id==="pfSet"&&window.bycSettings){pf.classList.remove("on");window.bycSettings()}
  if(id==="pfOut"){pf.classList.remove("on");clrSess();st.admin=false;st.me=null;st.mu=null;st.user=null;st.gs="login";location.hash="home";applyAll();if(typeof gdraw==="function")gdraw()}});
 setTimeout(refreshBtn,800);
 })();
@@ -1769,6 +1769,8 @@ reg("জরুরি যোগাযোগ","fxec","📞","#D83A3A","#7A4DE0",.8
 .ic{filter:none!important;background:rgba(255,255,255,.88)!important;border-radius:22px!important;padding:12px 4px 9px!important;box-shadow:0 6px 16px rgba(20,33,61,.18);text-shadow:none!important;font-size:13px!important;line-height:1.25;text-align:center;gap:7px!important}
 .ic i{width:62px!important;height:62px!important;border-radius:50%!important;font-size:30px!important;border:3px solid #fff;box-shadow:0 6px 12px rgba(20,33,61,.3),0 2px 0 rgba(255,255,255,.5) inset!important}
 .ic:active{transform:scale(.95)}
+.ic,.ic:visited{color:#14213D!important;font-weight:700!important;opacity:1!important}
+.ic i{color:initial}
 </style>
 
 
@@ -1812,6 +1814,177 @@ fd.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest
  var img=document.querySelector("#enRes img");if(!img)return;var c=document.createElement("canvas"),s=Math.min(1,640/Math.max(img.naturalWidth,img.naturalHeight));c.width=Math.round(img.naturalWidth*s);c.height=Math.round(img.naturalHeight*s);c.getContext("2d").drawImage(img,0,0,c.width,c.height);
  st.feed.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),u:w.u,n:w.n,x:"✨ ফটো এনহ্যান্সার দিয়ে উন্নত করা ছবি",img:c.toDataURL("image/jpeg",.7),t:Date.now(),lk:[],cm:[]});
  if(st2)st2.textContent="✔ আপনার প্রোফাইল/ফিডে শেয়ার হয়েছে।"});
+})();
+</script>
+
+<style id="byc-cid-css">
+body:not(.adm) #cert .noprint{display:none!important}
+#cert .cnote{display:none}body:not(.adm) #cert .cnote{display:block}
+.cf{border:6px double #B8860B!important;background:linear-gradient(180deg,#FFFDF3,#FFF4CC)!important;box-shadow:0 0 0 3px #fff inset,0 8px 24px rgba(0,0,0,.2)}
+.cf .cf-t{background:linear-gradient(90deg,#14213D,#C0201B);-webkit-background-clip:text;background-clip:text;color:transparent!important;font-weight:800}
+.cf-sig5{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:26px;position:relative}
+.cf-sig5 div{text-align:center;font-size:8.5px;line-height:1.25;color:#C0201B;font-weight:700}.cf-sig5 i{display:block;border-top:1.5px solid #14213D;margin:0 2px 3px}
+#id{--u:5px}#bidWrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+#bid{width:calc(var(--u)*54);height:calc(var(--u)*86);border-radius:calc(var(--u)*3);overflow:hidden;background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.3);display:flex;flex-direction:column;align-items:center;color:#14213D;text-align:center;position:relative}
+#bid .hd{width:100%;background:linear-gradient(160deg,#1A0FFF,#E2136E);color:#fff;padding:calc(var(--u)*2.5) 0 calc(var(--u)*9);font-weight:800;font-size:calc(var(--u)*3.4);line-height:1.2}
+#bid .hd small{display:block;font-size:calc(var(--u)*2.2);font-weight:600;opacity:.9}
+#bid .ph{width:calc(var(--u)*22);height:calc(var(--u)*22);border-radius:50%;border:calc(var(--u)*.9) solid #fff;margin-top:calc(var(--u)*-8);object-fit:cover;background:#E8ECFA;display:grid;place-items:center;font-size:calc(var(--u)*9);font-weight:800}
+#bid .nm{font-size:calc(var(--u)*4.4);font-weight:800;margin-top:calc(var(--u)*1.5)}
+#bid .rl{font-size:calc(var(--u)*2.8);color:#C0201B;font-weight:700}
+#bid .no{font-size:calc(var(--u)*3);margin-top:calc(var(--u)*1)}
+#bid .qq{margin-top:calc(var(--u)*1.5);width:calc(var(--u)*17);height:calc(var(--u)*17)}#bid .qq img,#bid .qq canvas,#bid .qq svg{width:100%!important;height:100%!important;display:block}
+#bid .ad{font-size:calc(var(--u)*2.2);margin-top:calc(var(--u)*1);padding:0 calc(var(--u)*2);line-height:1.3}
+@media print{body.pid .view{display:none!important}body.pid #id{display:block!important;--u:1mm}body.pid #cert{display:none!important}body.pid #id .card>*:not(#bidWrap){display:none!important}body.pid #bidWrap .noprint{display:none!important}body.pid #id .card{box-shadow:none;background:none}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script id="byc-cid">
+(function(){
+if(typeof st==="undefined")return;var g=function(i){return document.getElementById(i)};
+/* ---------- সার্টিফিকেট ---------- */
+var sel=g("cType");if(sel){
+ var cats=["স্বেচ্ছাসেবক সার্টিফিকেট","বর্ষসেরা অনুদান প্রদানকারী","সেরা স্বেচ্ছাসেবক","সেরা গায়ক","সেরা নৃত্য পুরস্কার","খেলার সনদ","ম্যানেজমেন্ট সনদ","সেরা দর্শক সনদ","বিজয়ী সম্মাননা সার্টিফিকেট","পুরস্কার ও সম্মাননা"];st.ccat=st.ccat||[];
+ var fill=function(){var v=sel.value;sel.innerHTML=cats.concat(st.ccat).map(function(c){return"<option>"+esc(c)+"</option>"}).join("");if(v)sel.value=v};fill();
+ var yr=document.createElement("input");yr.id="cYr";yr.placeholder="সাল (যেমন: ২০২৬)";yr.value=String(new Date().getFullYear()).replace(/[0-9]/g,function(c){return"০১২৩৪৫৬৭৮৯"[c]});sel.parentNode.insertBefore(yr,sel);
+ var ab=document.createElement("button");ab.className="btn s n";ab.textContent="＋ নতুন ক্যাটাগরি";ab.onclick=function(){var c=prompt("নতুন সনদের ক্যাটাগরির নাম");if(c){st.ccat.push(c);fill();sel.value=c;cert3()}};sel.parentNode.insertBefore(ab,sel.nextSibling);
+ var note=document.createElement("div");note.className="card cnote";note.innerHTML='<h2>সার্টিফিকেট</h2><p class="note">সার্টিফিকেট শুধু অ্যাডমিন তৈরি করে দেন। আপনার সনদের জন্য অ্যাডমিনের সাথে যোগাযোগ করুন।</p>';g("cert").insertBefore(note,g("cert").firstChild);
+ var old=document.querySelector("#cf .cf-sig");if(old){old.style.display="none";old.insertAdjacentHTML("afterend",'<div class="cf-sig5">'+'<div><i></i>বিরোপাড়া তরুন সংঘ কমিটির স্বাক্ষর</div>'.repeat(5)+'</div>')}
+ function cert3(){if(typeof cert2==="function")cert2();g("cf").style.display=st.admin?"":"none";var cn=g("cNote");if(cn)cn.style.display="none";var ty=sel.value,y=g("cYr").value.trim(),ev=g("cEv").value.trim(),w=ev||"সংগঠনের কার্যক্রমে",B={
+  "বর্ষসেরা অনুদান প্রদানকারী":"সংগঠনের কল্যাণে মূল্যবান অনুদান দিয়ে সহযোগিতা করার জন্য "+y+" সালের বর্ষসেরা অনুদান প্রদানকারী হিসেবে এই সনদ প্রদান করা হলো।",
+  "সেরা স্বেচ্ছাসেবক":w+" নিষ্ঠা ও আন্তরিকতার সাথে কাজ করে "+y+" সালের সেরা স্বেচ্ছাসেবক হওয়ায় এই সনদ প্রদান করা হলো।",
+  "সেরা গায়ক":w+" সুমধুর কণ্ঠে সংগীত পরিবেশন করে সেরা গায়ক নির্বাচিত হওয়ায় এই সনদ প্রদান করা হলো।",
+  "সেরা নৃত্য পুরস্কার":w+" নৃত্য পরিবেশনায় অসাধারণ প্রতিভার স্বাক্ষর রেখে সেরা নৃত্য পুরস্কার অর্জন করায় এই সনদ প্রদান করা হলো।",
+  "খেলার সনদ":(ev||"সংগঠনের ক্রীড়া আয়োজনে")+" খেলায় অংশগ্রহণ করে ক্রীড়াসুলভ মনোভাব ও দক্ষতার পরিচয় দেওয়ায় এই সনদ প্রদান করা হলো।",
+  "ম্যানেজমেন্ট সনদ":"সংগঠনের ব্যবস্থাপনায় দায়িত্বশীলতা ও নেতৃত্বের সাথে অবদান রাখার জন্য এই সনদ প্রদান করা হলো।",
+  "সেরা দর্শক সনদ":w+" উপস্থিত থেকে শৃঙ্খলা ও উৎসাহের মাধ্যমে সেরা দর্শকের ভূমিকা পালন করায় এই সনদ প্রদান করা হলো।"};
+  var b=B[ty]||(cats.indexOf(ty)<0?w+" অসামান্য অবদান রাখার জন্য এই সনদ প্রদান করা হলো।":null);
+  if(b){g("cB").textContent=b;g("cT").textContent=ty.replace("সার্টিফিকেট","সনদপত্র")+(/সেরা|বর্ষ/.test(ty)&&y?" ("+y+")":"")}}
+ ["cName","cEv","cYr"].forEach(function(i){g(i).oninput=cert3});["cType","cPos"].forEach(function(i){g(i).onchange=cert3});cert3()}
+/* ---------- ডিজিটাল আইডি কার্ড ---------- */
+var ms=g("mSel"),old2=document.querySelector("#id .idcard");
+if(ms&&old2){old2.style.display="none";var w=document.createElement("div");w.id="bidWrap";w.innerHTML='<div id="bid"></div><div class="noprint" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn g" id="bidDl">⬇️ ছবি ডাউনলোড</button><button class="btn" id="bidPr">🖨️ প্রিন্ট (৫৪×৮৬ মিমি)</button></div>';old2.parentNode.insertBefore(w,old2);
+ var last="";function render(){var m=members[ms.value]||members[0];if(!m)return;var key=[ms.value,m.n,m.pic,m.idn,m.r].join("|");if(key===last)return;last=key;
+  var no=m.idn||"BYC-"+(1000+members.indexOf(m)),data="BYC|"+no+"|"+m.n;
+  g("bid").innerHTML='<div class="hd">বিরোপাড়া তরুণ সংঘ<small>BIROPARA YOUTH CLUB</small></div>'+(m.pic?'<img class="ph" src="'+m.pic+'" alt="">':'<div class="ph">'+esc(m.n.charAt(0))+'</div>')+'<div class="nm">'+esc(m.n)+'</div><div class="rl">'+esc(m.r||"সদস্য")+'</div><div class="no">আইডি: <b>'+esc(no)+'</b></div><div class="qq" id="bidQ"></div><div class="ad">বিরোপাড়া, গোপালপুর, লালপুর, নাটোর</div>';
+  var q=g("bidQ");if(window.QRCode){try{new QRCode(q,{text:data,width:200,height:200,correctLevel:QRCode.CorrectLevel.M})}catch(e){q.innerHTML=qr(no)}}else if(typeof qr==="function")q.innerHTML=qr(no)}
+ ms.addEventListener("change",render);setInterval(render,1200);setTimeout(render,500);
+ g("bidPr").onclick=function(){document.body.classList.add("pid");window.print();setTimeout(function(){document.body.classList.remove("pid")},500)};
+ g("bidDl").onclick=function(){if(typeof html2canvas==="undefined"){alert("এই ব্রাউজারে হচ্ছে না, প্রিন্ট ব্যবহার করুন");return}html2canvas(g("bid"),{scale:3,backgroundColor:"#ffffff"}).then(function(c){var a=document.createElement("a");a.href=c.toDataURL("image/png");a.download="BYC-ID.png";document.body.appendChild(a);a.click();a.remove()})}}
+})();
+</script>
+
+
+<style id="byc-ex-css">
+.ex .bx{background:var(--card,#fff);border:1px solid var(--line);border-radius:16px;padding:12px;margin:10px 0}
+.ex .sm{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center}.ex .sm div{background:var(--card,#fff);border:1px solid var(--line);border-radius:14px;padding:8px 2px}.ex .sm b{display:block;font-size:15px}.ex .sm small{color:var(--mut)}
+.ex .chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.ex .chips button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 12px;border-radius:99px;font:600 13px 'Hind Siliguri'}.ex .chips button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.ex .it{border-top:1px solid var(--line);padding:10px 0}.ex .it:first-child{border-top:0}
+.ex .it img{max-width:100%;border-radius:10px;margin-top:6px}
+.sx{position:fixed;inset:0;z-index:97;background:var(--bg,#EEF1FB);overflow:auto;padding:56px 14px 90px;display:none}.sx.on{display:block}
+.sx .r{display:flex;align-items:center;gap:8px;background:var(--card,#fff);border:1px solid var(--line);border-radius:14px;padding:8px 10px;margin:6px 0}.sx .r span{flex:1;font-weight:700}.sx .r button{border:0;background:var(--line);border-radius:10px;padding:8px 12px;font-size:15px;color:var(--ink)}
+</style>
+<script id="byc-ex">
+(function(){
+if(typeof st==="undefined"||typeof F==="undefined"||typeof X==="undefined"||typeof fd==="undefined")return;
+var g=function(i){return document.getElementById(i)},rc=null;
+st.exp=st.exp||[];st.expCats=st.expCats||["ডেকোরেশন","কাঁচা বাজার","মুদি বাজার","মাঠ সাজানো","গাড়ি ভাড়া"];var cf="";
+function net(e){return e.amt-(e.back||0)}
+function sync(){st.spent=st.exp.map(function(e){return[e.c,net(e)]});if(typeof homeRef==="function")homeRef()}
+function shrink(f,cb){var im=new Image(),u=URL.createObjectURL(f);im.onload=function(){var s=Math.min(1,700/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);cb(c.toDataURL("image/jpeg",.65))};im.src=u}
+function sum(a){return a.reduce(function(t,x){return t+x},0)}
+function body(){var out=sum(st.exp.map(net)),bl=bal(),inc=bl+out,L=st.exp.filter(function(e){return!cf||e.c===cf});
+ var h='<div class="sm"><div><small>মোট জমা</small><b>৳'+bn(inc)+'</b></div><div><small>মোট খরচ</small><b>৳'+bn(out)+'</b></div><div><small>বর্তমান ফান্ড</small><b>৳'+bn(bl)+'</b></div></div>'
+ +'<div class="chips"><button data-nx="c:" class="'+(cf?"":"on")+'">সব</button>'+st.expCats.map(function(c,i){var t=sum(st.exp.filter(function(e){return e.c===c}).map(net));return'<button data-nx="c:'+i+'" class="'+(cf===c?"on":"")+'">'+esc(c)+' ৳'+bn(t)+'</button>'}).join("")+(st.admin?'<button data-nx="nc">＋ ক্যাটাগরি</button>':"")+'</div>';
+ if(st.admin)h+='<div class="bx"><h3 style="margin:0 0 6px">নতুন খরচ (টাকা প্রদান)</h3><select id="nxC">'+st.expCats.map(function(c){return"<option>"+esc(c)+"</option>"}).join("")+'</select><select id="nxM">'+members.map(function(m,i){return m.a&&!m.kid?'<option value="'+i+'">'+esc(m.n)+' · '+esc(m.idn||"")+'</option>':""}).join("")+'</select><input id="nxA" type="number" placeholder="প্রদত্ত টাকা"><input id="nxN" placeholder="কীসের জন্য (ঐচ্ছিক)"><button class="btn g" data-nx="add">＋ যোগ করুন</button><p id="nxE" style="color:var(--bad);font-weight:700"></p></div><input type="file" id="nxF" accept="image/*" style="display:none">';
+ h+='<div class="bx">'+(L.length?L.slice().reverse().map(function(e){var i=st.exp.indexOf(e);return'<div class="it"><div class="row"><b>'+esc(e.c)+'</b><b>৳'+bn(net(e))+'</b></div><small>'+esc(e.who)+' · '+esc(e.idn||"")+' · '+esc(e.d)+'</small>'+(e.note?'<div>'+esc(e.note)+'</div>':"")+'<small style="display:block">প্রদত্ত ৳'+bn(e.amt)+(e.back?' · ফেরত ৳'+bn(e.back):"")+(e.rcpt?"":' · রসিদ বাকি')+'</small>'+(e.rcpt?'<img src="'+e.rcpt+'" alt="রসিদ">':"")+(st.admin?'<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn s n" data-nx="r:'+i+'">🧾 রসিদ/ফেরত</button><button class="btn s" style="background:#D83A3A;color:#fff" data-nx="x:'+i+'">মুছুন</button></div>':"")+'</div>'}).join(""):'<p class="note">এখনো কোনো খরচ যোগ হয়নি।</p>')+'</div>';return h}
+X.expn=function(){return'<div class="ex" id="exRoot">'+body()+'</div>'};
+function draw(){var r=g("exRoot");if(r)r.innerHTML=body()}
+fd.addEventListener("change",function(e){if(e.target.id!=="nxF"||!e.target.files[0]||rc===null)return;var x=st.exp[rc];shrink(e.target.files[0],function(u){x.rcpt=u;var b=prompt("কাজ শেষে ফেরত টাকা কত? (না থাকলে ০)","0");x.back=Math.max(0,Math.min(x.amt,+toen(String(b||"0"))||0));sync();draw()})});
+fd.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-nx]");if(!b||!g("exRoot"))return;var a=b.dataset.nx.split(":");
+ if(a[0]==="c"){cf=a[1]===""?"":st.expCats[+a[1]]}
+ if(a[0]==="nc"){var c=prompt("নতুন খরচের ক্যাটাগরি");if(c)st.expCats.push(c)}
+ if(a[0]==="add"){var m=members[g("nxM").value],am=+toen(g("nxA").value||"0");if(!m||am<=0){g("nxE").textContent="সদস্য ও টাকার পরিমাণ দিন";return}
+  st.exp.push({id:Date.now(),c:g("nxC").value,who:m.n,idn:m.idn||"",amt:am,back:0,d:td(),note:g("nxN").value.trim(),rcpt:""});sync()}
+ if(a[0]==="x"&&confirm("এই খরচ মুছবেন?")){st.exp.splice(+a[1],1);sync()}
+ if(a[0]==="r"){rc=+a[1];g("nxF").click();return}
+ draw()});
+var idx=F.length;F.push([bn(idx+1)+". খরচের বিবরণ","expn"]);if(typeof EM!=="undefined")EM.push("🧾");
+function icon(d){var b=document.createElement("button");b.className="ic";b.style.cssText="--a:#E08A00;--b:#C0201B;--d:"+d+"s";b.innerHTML="<i><span>🧾</span></i>খরচের বিবরণ";b.onclick=function(){st.cur=idx;st.view=-1;st.cw=-1;fdraw()};return b}
+var ap2=g("ap"),fg2=g("fg"),fund=ap2&&[].slice.call(ap2.querySelectorAll(".ic")).filter(function(x){return x.textContent.indexOf("ফান্ড")>=0})[0];
+if(ap2)ap2.insertBefore(icon(.3),fund?fund.nextSibling:null);if(fg2)fg2.appendChild(icon(.6));sync();
+/* ---------- সেটিং: আইকনের ক্রম ও লুকানো ---------- */
+var KEY="byc_order",sx=document.createElement("div");sx.className="sx";document.body.appendChild(sx);
+function nm(b){return b.lastChild.textContent.trim()}
+function icons(){return[].slice.call(ap2.children).filter(function(b){return b.classList.contains("ic")})}
+function cfg(){try{return JSON.parse(localStorage.getItem(KEY))||{order:[],hide:[]}}catch(e){return{order:[],hide:[]}}}
+function apply(){var c=cfg(),m={};icons().forEach(function(b){m[nm(b)]=b});c.order.forEach(function(n){if(m[n])ap2.appendChild(m[n])});
+ icons().forEach(function(b){var h=c.hide.indexOf(nm(b))>=0;if(h){if(b.style.display!=="none")b.dataset.hid="1";if(b.dataset.hid)b.style.display="none"}else if(b.dataset.hid){b.style.display="";delete b.dataset.hid}})}
+function listView(){var c=cfg(),L=icons().filter(function(b){return b.style.display!=="none"||b.dataset.hid}),o=L.map(nm);
+ var order=c.order.filter(function(n){return o.indexOf(n)>=0}).concat(o.filter(function(n){return c.order.indexOf(n)<0}));return{o:order,h:c.hide}}
+function show(){var v=listView();sx.innerHTML='<div style="position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between"><button class="btn s n" id="sxB">← ফিরুন</button><button class="btn s n" id="sxR">রিসেট</button></div><h2>⚙️ সেটিং — আইকন সাজান</h2><p class="note">▲▼ দিয়ে ক্রম বদলান, 👁 দিয়ে লুকান/দেখান। এটি শুধু আপনার ফোনে সংরক্ষিত হবে।</p>'+v.o.map(function(n,i){var h=v.h.indexOf(n)>=0;return'<div class="r" style="opacity:'+(h?.5:1)+'"><span>'+esc(n)+'</span><button data-s="u:'+i+'">▲</button><button data-s="d:'+i+'">▼</button><button data-s="h:'+i+'">'+(h?"🚫":"👁")+'</button></div>'}).join("");sx.classList.add("on");sx._v=v}
+sx.addEventListener("click",function(e){var b=e.target,v=sx._v;if(b.id==="sxB"){sx.classList.remove("on");return}
+ if(b.id==="sxR"){localStorage.removeItem(KEY);location.reload();return}
+ var a=(b.dataset.s||"").split(":");if(!a[0])return;var i=+a[1],o=v.o,h=v.h.slice();
+ if(a[0]==="u"&&i>0){var t=o[i];o[i]=o[i-1];o[i-1]=t}if(a[0]==="d"&&i<o.length-1){var t2=o[i];o[i]=o[i+1];o[i+1]=t2}
+ if(a[0]==="h"){var k=h.indexOf(o[i]);if(k<0)h.push(o[i]);else h.splice(k,1)}
+ try{localStorage.setItem(KEY,JSON.stringify({order:o,hide:h}))}catch(x){}apply();show()});
+window.bycSettings=show;apply();setTimeout(apply,900);
+})();
+</script>
+
+<style id="byc-np-css">
+.np .tabs2{display:flex;gap:6px;margin:6px 0 10px}.np .tabs2 button{flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 0;border-radius:12px;font:700 14px 'Hind Siliguri'}.np .tabs2 button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.np .bx{background:var(--card,#fff);border:1px solid var(--line);border-radius:16px;padding:12px;margin:10px 0}
+.np .nc img.hero{width:100%;border-radius:12px;display:block;margin-bottom:8px;max-height:230px;object-fit:cover}
+.np .nc h3{margin:0 0 4px;font-size:17px;line-height:1.35}.np .nc .tx{white-space:pre-wrap;font-size:14px;line-height:1.55}
+.np .rp{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--mut)}.np .rp i{width:28px;height:28px;border-radius:50%;background:linear-gradient(145deg,#7A4DE0,#E2136E);color:#fff;display:grid;place-items:center;font-style:normal;font-weight:800;overflow:hidden}.np .rp i img{width:100%;height:100%;object-fit:cover}
+.np .adc{background:linear-gradient(120deg,#FFF1C2,#FFD9A8);color:#14213D;border-radius:14px;padding:12px;margin:10px 0;font-weight:700;position:relative}.np .adc b{position:absolute;top:6px;right:10px;font-size:10px;opacity:.6}
+.np .ac{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.np textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;background:var(--card);color:var(--ink);margin:6px 0}
+</style>
+<script id="byc-np">
+(function(){
+if(typeof st==="undefined"||typeof X==="undefined"||typeof fd==="undefined")return;
+var g=function(i){return document.getElementById(i)};
+st.np=st.np||[];if(!st.np.length&&st.news&&st.news.length)st.np=st.news.map(function(t,i){return{id:i+1,t:t,b:"",img:"",by:"BYC অ্যাডমিন",bp:"",d:td()}});
+var NW={tab:"news",open:null,e:-1,d:{}};
+function sync(){st.news=st.np.map(function(n){return n.t});if(typeof homeRef==="function")homeRef()}
+function shrink(f,cb){var im=new Image(),u=URL.createObjectURL(f);im.onload=function(){var s=Math.min(1,800/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);cb(c.toDataURL("image/jpeg",.65))};im.src=u}
+function F2(){var d=NW.d;return'<div class="bx"><h3 style="margin:0 0 6px">'+(NW.e>=0?"সংবাদ সম্পাদনা":"নতুন সংবাদ")+'</h3><input data-nwk="t" placeholder="শিরোনাম" value="'+esc(d.t||"")+'"><textarea data-nwk="b" rows="5" placeholder="বিস্তারিত">'+esc(d.b||"")+'</textarea><input data-nwk="by" placeholder="সংবাদদাতার নাম" value="'+esc(d.by||"BYC অ্যাডমিন")+'">'
+ +'<div class="row"><label class="btn s n" style="margin:0">📷 সংবাদের ছবি<input type="file" accept="image/*" data-nwp="img" style="display:none"></label>'+(d.img?'<img src="'+d.img+'" style="height:44px;border-radius:8px">':"")+'</div><div class="row" style="margin-top:6px"><label class="btn s n" style="margin:0">🙂 সংবাদদাতার ছবি<input type="file" accept="image/*" data-nwp="bp" style="display:none"></label>'+(d.bp?'<img src="'+d.bp+'" style="height:44px;border-radius:50%">':"")+'</div>'
+ +'<p id="nwE" style="color:var(--bad);font-weight:700"></p><button class="btn g" data-nw="save">'+(NW.e>=0?"💾 সংরক্ষণ":"📰 প্রকাশ করুন")+'</button> '+(NW.e>=0?'<button class="btn n" data-nw="cancel">বাতিল</button>':"")+'</div>'}
+function card(n,i){var o=NW.open===i,u=encodeURIComponent(location.href.split("#")[0]),tx=encodeURIComponent(n.t+" — বিরোপাড়া তরুন সংঘ");
+ return'<div class="bx nc">'+(n.img?'<img class="hero" src="'+n.img+'" alt="">':"")+'<h3>'+esc(n.t)+'</h3><div class="tx">'+esc(o||!n.b||n.b.length<140?n.b:n.b.slice(0,140)+"…")+'</div>'+(n.b&&n.b.length>=140?'<button class="btn s n" data-nw="o:'+i+'">'+(o?"সংক্ষেপ":"বিস্তারিত পড়ুন")+'</button>':"")
+ +'<div class="rp"><i>'+(n.bp?'<img src="'+n.bp+'" alt="">':esc((n.by||"B").charAt(0)))+'</i><span>'+esc(n.by||"")+' · '+esc(n.d||"")+'</span></div>'
+ +'<div class="ac"><button class="btn s n" data-nw="sh:'+i+'">📤 শেয়ার</button><a class="btn s g" style="text-decoration:none" target="_blank" href="https://wa.me/?text='+tx+'%20'+u+'">WhatsApp</a><a class="btn s" style="text-decoration:none;background:#1877F2;color:#fff" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+u+'">Facebook</a>'
+ +(st.admin?'<button class="btn s n" data-nw="ed:'+i+'">✏️ এডিট</button><button class="btn s" style="background:#D83A3A;color:#fff" data-nw="dl:'+i+'">🗑 মুছুন</button>':"")+'</div></div>'}
+function list(key,ph,lbl){var a=st[key]=st[key]||[],h='';if(!a.length)h+='<p class="note">কিছু নেই।</p>';
+ a.forEach(function(t,i){h+='<div class="bx"><div>'+esc(t)+'</div>'+(st.admin?'<div class="ac"><button class="btn s n" data-nw="le:'+key+':'+i+'">✏️ এডিট</button><button class="btn s" style="background:#D83A3A;color:#fff" data-nw="ld:'+key+':'+i+'">🗑 মুছুন</button></div>':"")+'</div>'});
+ return h+(st.admin?'<textarea id="nwL" rows="2" placeholder="'+ph+'"></textarea><button class="btn g" data-nw="la:'+key+'">＋ '+lbl+' যোগ করুন</button>':"")}
+function body(){var h='';if(st.admin)h+='<div class="tabs2">'+[["news","📰 সংবাদ"],["notices","📢 নোটিশ"],["ads","🛍️ বিজ্ঞাপন"]].map(function(t){return'<button data-nw="t:'+t[0]+'" class="'+(NW.tab===t[0]?"on":"")+'">'+t[1]+'</button>'}).join("")+'</div>';
+ if(!st.admin)NW.tab="news";
+ if(NW.tab==="notices")return h+list("notices","নতুন নোটিশ লিখুন","নোটিশ");if(NW.tab==="ads")return h+list("ads","নতুন বিজ্ঞাপন লিখুন","বিজ্ঞাপন");
+ if(st.admin)h+=F2();var ads=(st.ads||[]).filter(Boolean),L=st.np.map(function(n,i){return[n,i]}).reverse();
+ if(!L.length)h+='<p class="note">এখনো কোনো সংবাদ নেই।</p>';
+ L.forEach(function(x,k){h+=card(x[0],x[1]);if(ads.length&&(k%2===1))h+='<div class="adc"><b>বিজ্ঞাপন</b>'+esc(ads[Math.floor(k/2)%ads.length])+'</div>'});return h}
+X.news=function(){return'<div class="np" id="npRoot">'+body()+'</div>'};
+function draw(){var r=g("npRoot");if(r)r.innerHTML=body()}
+fd.addEventListener("input",function(e){var k=e.target.dataset&&e.target.dataset.nwk;if(k&&g("npRoot"))NW.d[k]=e.target.value});
+fd.addEventListener("change",function(e){var p=e.target.dataset&&e.target.dataset.nwp;if(p&&e.target.files[0])shrink(e.target.files[0],function(u){NW.d[p]=u;draw()})});
+fd.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-nw]");if(!b||!g("npRoot"))return;var a=b.dataset.nw.split(":");
+ if(a[0]==="t"){NW.tab=a[1]}
+ if(a[0]==="o"){NW.open=NW.open===+a[1]?null:+a[1]}
+ if(a[0]==="save"){var d=NW.d;if(!(d.t||"").trim()){g("nwE").textContent="শিরোনাম দিন";return}
+  var it={id:NW.e>=0?st.np[NW.e].id:Date.now(),t:d.t.trim(),b:(d.b||"").trim(),img:d.img||"",by:(d.by||"BYC অ্যাডমিন").trim(),bp:d.bp||"",d:NW.e>=0?st.np[NW.e].d:td()};
+  if(NW.e>=0)st.np[NW.e]=it;else st.np.push(it);NW.e=-1;NW.d={};sync()}
+ if(a[0]==="cancel"){NW.e=-1;NW.d={}}
+ if(a[0]==="ed"){NW.e=+a[1];NW.d=Object.assign({},st.np[NW.e])}
+ if(a[0]==="dl"&&confirm("এই সংবাদ মুছবেন?")){st.np.splice(+a[1],1);NW.e=-1;NW.d={};sync()}
+ if(a[0]==="sh"){var n=st.np[+a[1]],u=location.href.split("#")[0];if(navigator.share)navigator.share({title:n.t,text:n.t+" — বিরোপাড়া তরুন সংঘ",url:u}).catch(function(){});return}
+ if(a[0]==="le"){var arr=st[a[1]],v=prompt("এডিট করুন",arr[+a[2]]);if(v&&v.trim()){arr[+a[2]]=v.trim();if(typeof homeRef==="function")homeRef()}}
+ if(a[0]==="ld"&&confirm("মুছবেন?")){st[a[1]].splice(+a[2],1);if(typeof homeRef==="function")homeRef()}
+ if(a[0]==="la"){var t=g("nwL").value.trim();if(t){st[a[1]].unshift(t);if(typeof homeRef==="function")homeRef()}}
+ draw()});
+sync();
 })();
 </script>
 
