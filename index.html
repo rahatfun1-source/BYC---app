@@ -2068,6 +2068,33 @@ main{margin-top:0!important;max-width:760px;padding:0 12px!important}
 .pf .pg .it2 h3{font:800 17px/1.4 'Hind Siliguri',sans-serif;color:var(--ink)}
 .pf .pg .it2 p{display:none}
 .pf .pg .it2 h3::first-line{color:inherit}
+/* ===== নতুন হেডার ===== */
+header{padding:10px 12px 8px!important;border-top:5px solid var(--ember);border-bottom:1px solid var(--line)!important;gap:6px}
+header .logo{gap:10px;flex:1;min-width:0}
+header .mark{width:54px!important;height:54px!important;box-shadow:0 0 0 2px var(--ember);flex-shrink:0}
+header .logo>div:last-child{display:flex;flex-direction:column-reverse;min-width:0}
+header .logo b{font:800 31px/1.05 'Baloo Da 2',sans-serif;white-space:nowrap}
+header .logo b i{font-style:normal}header .logo b i:first-child{color:var(--ember)}header .logo b i+i{color:var(--ink)}
+header .logo span{font:700 10px/1.2 'Hind Siliguri';letter-spacing:2px;text-transform:uppercase;color:var(--mut);opacity:1}
+#psrch,#pmenu{flex-shrink:0;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:50%;width:40px;height:40px;display:grid;place-items:center;font-size:18px;padding:0}
+#pmenu{font-size:22px}
+@media(max-width:380px){header .logo b{font-size:25px}}
+/* আজকের তারিখ/ঘড়ি কার্ড সরানো */
+/* অনলাইন চিহ্ন সরানো ও নিচের ফাঁকা জায়গা */
+body>div[style*="99999"]{top:auto!important;left:6px!important;bottom:calc(112px + env(safe-area-inset-bottom,0px))!important;opacity:.7!important;transform:scale(.85);transform-origin:left bottom}
+body{padding-bottom:168px!important}
+/* ===== ছোট ঘড়ি ও তারিখ ===== */
+header{flex-wrap:wrap}
+header .ck{display:block;order:9;flex:0 0 100%;margin:8px 0 0!important;padding:0!important;background:none!important;animation:none}
+header .ck-in{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 10px;border-radius:8px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-left:4px solid var(--ember)}
+header .ck-t{display:flex;align-items:baseline;gap:4px;flex-shrink:0}
+header .ck-t b{font:800 21px/1 'Baloo Da 2',sans-serif;color:var(--ember);text-shadow:none;letter-spacing:0}
+header .ck-t sup{font-size:10px;color:var(--mut)}header .ck-t small{display:inline;font-size:12px;color:var(--mut);font-weight:700}
+header .ck-d{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:0 6px;text-align:right;font-size:11.5px;line-height:1.35;min-width:0}
+header .ck-d b{font:800 13px 'Baloo Da 2',sans-serif;color:var(--ink);display:inline}
+header .ck-d span{display:inline;opacity:1;color:var(--mut)}
+header .ck-d span:last-child{flex:0 0 100%;color:var(--ember);font-weight:700}
+header .ck-d em{color:inherit}
 
 </style>
 <script id="byc-portal">
@@ -2095,14 +2122,17 @@ fd.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest
 /* ---------- হোম: সরাসরি নিউজ ফিড ---------- */
 var home=g("home"),pfeed=document.createElement("div");pfeed.id="pfeed";pfeed.className="pf";home.insertBefore(pfeed,home.firstChild);
 function ex(t,n){t=String(t||"");return esc(t.length>n?t.slice(0,n)+"…":t)}
-function feed(){var L=(st.np||[]).slice().reverse(),h=adBox(0),c="";
- if(!L.length)h+='<p class="note">এখনো কোনো সংবাদ নেই।</p>';
+var PQ="";function feed(){var L=(st.np||[]).slice().reverse().filter(function(n){return!PQ||(n.t+" "+(n.b||"")).toLowerCase().indexOf(PQ)>=0}),h=adBox(0),c="";
+ if(!L.length)h+='<p class="note">'+(PQ?"কোনো সংবাদ পাওয়া যায়নি।":"এখনো কোনো সংবাদ নেই।")+'</p>';
  L.forEach(function(n,i){var im=n.img?'<img src="'+n.img+'" alt="">':'';
   if(i===0)h+='<article class="lead" data-go>'+im+'<div><h2>'+esc(n.t)+'</h2><p>'+ex(n.b,160)+'</p></div></article>'+adBox(1);
   else{c+='<article class="it2" data-go>'+im+'<div><h3>'+esc(n.t)+'</h3></div></article>';if(i%4===0)c+=adBox(i/4+1)}});
  pfeed.innerHTML=h+(c?'<div class="pg">'+c+'</div>':"")}
 pfeed.addEventListener("click",function(e){if(!e.target.closest("[data-go]"))return;var b=[].slice.call(document.querySelectorAll("#ap .ic")).filter(function(x){return x.textContent.indexOf("নিউজ")>=0})[0];if(b)b.click()});
-var hd=document.querySelector("header"),mb=document.createElement("button");mb.id="pmenu";mb.textContent="☰";mb.setAttribute("aria-label","মেনু");mb.onclick=function(){var a=g("ap");if(a)a.scrollIntoView({behavior:"smooth"})};if(hd)hd.appendChild(mb);
+var hd=document.querySelector("header"),mb=document.createElement("button");mb.id="pmenu";mb.textContent="☰";mb.setAttribute("aria-label","মেনু");mb.onclick=function(){var a=g("ap");if(a)a.scrollIntoView({behavior:"smooth"})};var sb=document.createElement("button");sb.id="psrch";sb.textContent="🔍";sb.setAttribute("aria-label","সংবাদ খুঁজুন");
+sb.onclick=function(){var q=prompt("সংবাদ খুঁজুন (খালি রাখলে সব দেখাবে)",PQ);if(q===null)return;PQ=q.trim().toLowerCase();sig="";chk();window.scrollTo({top:0,behavior:"smooth"})};
+var lg=hd&&hd.querySelector(".logo b");if(lg)lg.innerHTML="<i>বিরোপাড়া</i> <i>তরুন সংঘ</i>";
+if(hd){hd.appendChild(sb);hd.appendChild(mb)}
 var nv=document.createElement("div");nv.id="pnav";
 [["সর্বশেষ",""],["নিউজ","নিউজ"],["খেলা","খেলা"],["ফান্ড","ফান্ড"],["নোটিশ","নোটিশ"],["খরচ","খরচের"],["ফটো এনহ্যান্স","এনহ্যান্সার"],["আইডি","আইডি"],["সার্টিফিকেট","সার্টিফিকেট"]].forEach(function(x,i){var a=document.createElement("a");a.textContent=x[0];if(!i)a.className="on";
  a.onclick=function(){if(!x[1]){window.scrollTo({top:0,behavior:"smooth"});return}var b=[].slice.call(document.querySelectorAll("#ap .ic")).filter(function(q){return q.textContent.indexOf(x[1])>=0})[0];if(b)b.click()};nv.appendChild(a)});
