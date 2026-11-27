@@ -1062,7 +1062,7 @@ lay();
   var SDK = window.BYC_SDK_BASE || "https://www.gstatic.com/firebasejs/13.4.0/";
 
   var G = ["members", "funds", "posts", "admins"];
-  var S = ["notices", "donors", "spent", "a", "b", "teams", "cp", "rst", "loans", "dons", "pend", "news", "ads", "cfg", "m", "cr", "feed", "bprog", "breq"];
+  var S = ["notices", "donors", "spent", "a", "b", "teams", "cp", "rst", "loans", "dons", "pend", "news", "ads", "cfg", "m", "cr", "feed", "bprog", "breq", "np", "adImgs", "exp"];
   var R = ["users", "fr", "msgs"];
   var ALL = G.concat(S, R);
 
@@ -1362,7 +1362,15 @@ var PRE={
  auto:{sharp:55,den:30,skin:0,lev:50,bri:0,con:8,sat:10},
  portrait:{sharp:40,den:35,skin:55,lev:40,bri:6,con:6,sat:6},
  old:{sharp:60,den:55,skin:0,lev:100,bri:4,con:18,sat:14},
- vivid:{sharp:45,den:20,skin:0,lev:50,bri:0,con:12,sat:35}
+ vivid:{sharp:45,den:20,skin:0,lev:50,bri:0,con:12,sat:35},
+  night:{sharp:55,den:70,skin:0,lev:100,bri:22,con:10,sat:12},
+  hdr:{sharp:80,den:25,skin:0,lev:80,bri:0,con:28,sat:24},
+  bw:{sharp:50,den:25,skin:0,lev:60,bri:0,con:20,sat:0,fx:"bw"},
+  sepia:{sharp:35,den:30,skin:0,lev:40,bri:2,con:10,sat:0,fx:"sepia"},
+  warm:{sharp:40,den:25,skin:0,lev:45,bri:3,con:8,sat:12,fx:"warm"},
+  cool:{sharp:40,den:25,skin:0,lev:45,bri:0,con:8,sat:10,fx:"cool"},
+  fade:{sharp:30,den:30,skin:0,lev:30,bri:4,con:-8,sat:-6,fx:"fade"},
+  vig:{sharp:45,den:25,skin:0,lev:50,bri:0,con:14,sat:14,fx:"vig"}
 };
 var S={img:null,w:0,h:0,pre:null,name:"photo",mode:"auto",pos:50,tm:0,res:null,v:Object.assign({scale:2},PRE.auto)};
 
@@ -1444,7 +1452,13 @@ function proc(c,v){
    if(dl>70)dl=70;else if(dl<-70)dl=-70;
    d[p]+=dl;d[p+1]+=dl;d[p+2]+=dl}
   b3=null}
- x.putImageData(id,0,0)}
+ if(v.fx){var fx=v.fx,R,G,B,Ly,xx,yy,kv;for(i=0,p=0;i<n;i++,p+=4){R=d[p];G=d[p+1];B=d[p+2];Ly=.299*R+.587*G+.114*B;
+   if(fx==="bw"){R=G=B=(Ly-128)*1.12+128}else if(fx==="sepia"){R=Ly*1.07+30;G=Ly*.95+14;B=Ly*.74}
+   else if(fx==="warm"){R*=1.09;G*=1.02;B*=.88}else if(fx==="cool"){R*=.9;B*=1.12}
+   else if(fx==="fade"){R=R*.86+34;G=G*.86+34;B=B*.86+40}
+   else if(fx==="vig"){xx=(i%w)/w-.5;yy=((i/w)|0)/h-.5;kv=1-Math.min(.65,(xx*xx+yy*yy)*1.6);R=(R*.95+14)*kv;G=(G*.9+8)*kv;B=(B*.8)*kv}
+   d[p]=R;d[p+1]=G;d[p+2]=B}}
+  x.putImageData(id,0,0)}
 
 /* ---------- ছবি লোড ---------- */
 function decode(f){return new Promise(function(res,rej){
@@ -1469,7 +1483,7 @@ function shell(){
  var h='<p class="note">ঝাপসা, পুরনো বা কম আলোর ছবি পরিষ্কার ও উজ্জ্বল করুন। ছবি আপনার ফোনেই প্রসেস হয় — কোথাও আপলোড হয় না, সম্পূর্ণ ফ্রি।</p>'
  +'<label class="drop"><span style="font-size:38px">🖼️</span><b>'+(S.img?"অন্য ছবি বাছুন":"ছবি বাছুন")+'</b><span>গ্যালারি বা ক্যামেরা থেকে</span><input type="file" accept="image/*" id="enF" style="display:none"></label><p class="note" id="enSt" role="status"></p>';
  if(!S.img)return h;
- h+='<div class="chips">'+[["auto","✨ অটো"],["portrait","👤 পোর্ট্রেট"],["old","🕰️ পুরনো ছবি"],["vivid","🌈 রঙিন"]].map(function(c){return'<button data-enact="preset:'+c[0]+'" class="'+(S.mode===c[0]?"on":"")+'">'+c[1]+'</button>'}).join("")+'</div>'
+ h+='<div class="chips">'+[["auto","✨ অটো"],["portrait","👤 পোর্ট্রেট"],["old","🕰️ পুরনো ছবি"],["vivid","🌈 রঙিন"],["night","🌙 কম আলো"],["hdr","🔆 HDR"],["bw","⚫ সাদা-কালো"],["sepia","🟤 সেপিয়া"],["warm","🔥 উষ্ণ"],["cool","❄️ শীতল"],["fade","🌫️ ফেড"],["vig","🎞️ ভিনটেজ"]].map(function(c){return'<button data-enact="preset:'+c[0]+'" class="'+(S.mode===c[0]?"on":"")+'">'+c[1]+'</button>'}).join("")+'</div>'
  +'<div class="cmp" id="enCmp"><canvas id="enOut"></canvas><div class="bf" id="enBefW"><canvas id="enBef"></canvas></div><span class="tag" style="left:8px">আগে</span><span class="tag" style="right:8px">পরে</span><div class="ln" id="enLn"></div></div>'
  +'<p class="note">মাঝের হ্যান্ডেল টেনে আগে–পরে তুলনা করুন।</p>';
  SL.forEach(function(s){var v=S.v[s[0]];h+='<div class="sl"><label for="enS_'+s[0]+'">'+s[1]+'</label><input type="range" id="enS_'+s[0]+'" data-enk="'+s[0]+'" min="'+s[2]+'" max="'+s[3]+'" value="'+v+'"><output id="enO_'+s[0]+'">'+v+'</output></div>'});
@@ -1515,7 +1529,7 @@ fd.addEventListener("change",function(e){var t=e.target;
  if(t.id==="enF"&&t.files&&t.files[0]){load(t.files[0]);t.value=""}
  if(t.id==="enSc"){S.v.scale=+t.value;info();clearRes()}});
 fd.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-enact]");if(!b)return;var a=b.dataset.enact;
- if(a.indexOf("preset:")===0){var k=a.slice(7);S.v=Object.assign({},S.v,PRE[k]);S.mode=k;syncUI();clearRes();paint()}
+ if(a.indexOf("preset:")===0){var k=a.slice(7);S.v=Object.assign({},S.v,{fx:""},PRE[k]);S.mode=k;syncUI();clearRes();paint()}
  else if(a==="reset"){S.v=Object.assign({scale:2},PRE.auto);S.mode="auto";var sc=g("enSc");if(sc)sc.value=2;syncUI();clearRes();paint();info()}
  else if(a==="make")make();
  else if(a==="share")share()});
@@ -1945,16 +1959,16 @@ window.bycSettings=show;apply();setTimeout(apply,900);
 (function(){
 if(typeof st==="undefined"||typeof X==="undefined"||typeof fd==="undefined")return;
 var g=function(i){return document.getElementById(i)};
-st.np=st.np||[];if(!st.np.length&&st.news&&st.news.length)st.np=st.news.map(function(t,i){return{id:i+1,t:t,b:"",img:"",by:"BYC অ্যাডমিন",bp:"",d:td()}});
+st.np=st.np||[];if(!st.np.length&&st.news&&st.news.length)st.np=st.news.map(function(t,i){return{id:i+1,t:t,b:"",img:"",by:"",bp:"",d:td()}});
 var NW={tab:"news",open:null,e:-1,d:{}};
 function sync(){st.news=st.np.map(function(n){return n.t});if(typeof homeRef==="function")homeRef()}
 function shrink(f,cb){var im=new Image(),u=URL.createObjectURL(f);im.onload=function(){var s=Math.min(1,800/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);cb(c.toDataURL("image/jpeg",.65))};im.src=u}
-function F2(){var d=NW.d;return'<div class="bx"><h3 style="margin:0 0 6px">'+(NW.e>=0?"সংবাদ সম্পাদনা":"নতুন সংবাদ")+'</h3><input data-nwk="t" placeholder="শিরোনাম" value="'+esc(d.t||"")+'"><textarea data-nwk="b" rows="5" placeholder="বিস্তারিত">'+esc(d.b||"")+'</textarea><input data-nwk="by" placeholder="সংবাদদাতার নাম" value="'+esc(d.by||"BYC অ্যাডমিন")+'">'
+function F2(){var d=NW.d;return'<div class="bx"><h3 style="margin:0 0 6px">'+(NW.e>=0?"সংবাদ সম্পাদনা":"নতুন সংবাদ")+'</h3><input data-nwk="t" placeholder="শিরোনাম" value="'+esc(d.t||"")+'"><textarea data-nwk="b" rows="5" placeholder="বিস্তারিত">'+esc(d.b||"")+'</textarea><input data-nwk="by" placeholder="সংবাদদাতার নাম" value="'+esc(d.by||"")+'">'
  +'<div class="row"><label class="btn s n" style="margin:0">📷 সংবাদের ছবি<input type="file" accept="image/*" data-nwp="img" style="display:none"></label>'+(d.img?'<img src="'+d.img+'" style="height:44px;border-radius:8px">':"")+'</div><div class="row" style="margin-top:6px"><label class="btn s n" style="margin:0">🙂 সংবাদদাতার ছবি<input type="file" accept="image/*" data-nwp="bp" style="display:none"></label>'+(d.bp?'<img src="'+d.bp+'" style="height:44px;border-radius:50%">':"")+'</div>'
  +'<p id="nwE" style="color:var(--bad);font-weight:700"></p><button class="btn g" data-nw="save">'+(NW.e>=0?"💾 সংরক্ষণ":"📰 প্রকাশ করুন")+'</button> '+(NW.e>=0?'<button class="btn n" data-nw="cancel">বাতিল</button>':"")+'</div>'}
 function card(n,i){var o=NW.open===i,u=encodeURIComponent(location.href.split("#")[0]),tx=encodeURIComponent(n.t+" — বিরোপাড়া তরুন সংঘ");
  return'<div class="bx nc">'+(n.img?'<img class="hero" src="'+n.img+'" alt="">':"")+'<h3>'+esc(n.t)+'</h3><div class="tx">'+esc(o||!n.b||n.b.length<140?n.b:n.b.slice(0,140)+"…")+'</div>'+(n.b&&n.b.length>=140?'<button class="btn s n" data-nw="o:'+i+'">'+(o?"সংক্ষেপ":"বিস্তারিত পড়ুন")+'</button>':"")
- +'<div class="rp"><i>'+(n.bp?'<img src="'+n.bp+'" alt="">':esc((n.by||"B").charAt(0)))+'</i><span>'+esc(n.by||"")+' · '+esc(n.d||"")+'</span></div>'
+ +'<div class="rp"><i>'+(n.bp?'<img src="'+n.bp+'" alt="">':esc((n.by||"B").charAt(0)))+'</i><span>'+esc(n.by||"")+'</span></div>'
  +'<div class="ac"><button class="btn s n" data-nw="sh:'+i+'">📤 শেয়ার</button><a class="btn s g" style="text-decoration:none" target="_blank" href="https://wa.me/?text='+tx+'%20'+u+'">WhatsApp</a><a class="btn s" style="text-decoration:none;background:#1877F2;color:#fff" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+u+'">Facebook</a>'
  +(st.admin?'<button class="btn s n" data-nw="ed:'+i+'">✏️ এডিট</button><button class="btn s" style="background:#D83A3A;color:#fff" data-nw="dl:'+i+'">🗑 মুছুন</button>':"")+'</div></div>'}
 function list(key,ph,lbl){var a=st[key]=st[key]||[],h='';if(!a.length)h+='<p class="note">কিছু নেই।</p>';
@@ -1974,7 +1988,7 @@ fd.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest
  if(a[0]==="t"){NW.tab=a[1]}
  if(a[0]==="o"){NW.open=NW.open===+a[1]?null:+a[1]}
  if(a[0]==="save"){var d=NW.d;if(!(d.t||"").trim()){g("nwE").textContent="শিরোনাম দিন";return}
-  var it={id:NW.e>=0?st.np[NW.e].id:Date.now(),t:d.t.trim(),b:(d.b||"").trim(),img:d.img||"",by:(d.by||"BYC অ্যাডমিন").trim(),bp:d.bp||"",d:NW.e>=0?st.np[NW.e].d:td()};
+  var it={id:NW.e>=0?st.np[NW.e].id:Date.now(),t:d.t.trim(),b:(d.b||"").trim(),img:d.img||"",by:(d.by||"").trim(),bp:d.bp||"",d:NW.e>=0?st.np[NW.e].d:td()};
   if(NW.e>=0)st.np[NW.e]=it;else st.np.push(it);NW.e=-1;NW.d={};sync()}
  if(a[0]==="cancel"){NW.e=-1;NW.d={}}
  if(a[0]==="ed"){NW.e=+a[1];NW.d=Object.assign({},st.np[NW.e])}
@@ -1988,5 +2002,145 @@ sync();
 })();
 </script>
 
+<style id="byc-portal-css">
+/* ===== নিউজ পোর্টাল ডিজাইন ===== */
+:root{--bg:#F2F0EB;--ember:#C8102E;--navy:#0B1F3A}
+#scene{display:none!important}body.scn{background:var(--bg)!important}
+header{background:var(--card)!important;color:var(--ink)!important;padding:12px 12px 8px!important;border-bottom:4px double var(--ember)}
+header .logo{justify-content:center;text-align:center}
+header .mark{width:44px;height:44px;border-radius:50%!important}
+header .logo b{font:800 30px/1.1 'Baloo Da 2',serif;color:var(--ember);letter-spacing:.3px}
+header .logo span{display:block;font-size:11px;letter-spacing:3px;text-transform:uppercase;opacity:.7}
+main{margin-top:10px!important;max-width:760px}
+#home{display:flex;flex-direction:column}#home::after{display:none!important}
+#pfeed{order:1}#home .hero{order:2;border-radius:6px;padding:10px 14px;background:var(--navy)}
+#home .hero h2{font-size:24px!important}#home #ap{order:3}#home #hadv{order:4}
+#home .card{border-radius:6px}
+.pf .ph{display:flex;align-items:center;gap:8px;border-bottom:3px solid var(--ember);margin:4px 0 10px}
+.pf .ph span{background:var(--ember);color:#fff;font:800 15px 'Baloo Da 2';padding:2px 12px}
+.pf .lead{background:var(--card);border:1px solid var(--line);margin-bottom:10px;cursor:pointer}
+.pf .lead img{width:100%;max-height:240px;object-fit:cover;display:block}
+.pf .lead div,.pf .it2 div{padding:10px}
+.pf .lead h2{font:800 22px/1.3 'Baloo Da 2';margin:0 0 4px}
+.pf p{margin:0;font-size:14px;color:var(--mut)}
+.pf .it2{display:flex;gap:10px;background:var(--card);border:1px solid var(--line);margin-bottom:8px;cursor:pointer}
+.pf .it2 img{width:104px;object-fit:cover;flex-shrink:0}
+.pf .it2 div{padding:8px 10px 8px 0;flex:1}.pf .it2 img+div{padding-left:0}.pf .it2:not(:has(img)) div{padding-left:10px}
+.pf .it2 h3{margin:0 0 3px;font-size:16px;line-height:1.35}
+.pad{position:relative;border:1px dashed var(--mut);background:var(--card);padding:18px 8px 8px;margin:8px 0;text-align:center;font-weight:700}
+.pad b{position:absolute;top:2px;right:6px;font-size:10px;opacity:.6}
+.pad img{width:100%;max-height:200px;object-fit:contain;display:block;border-radius:4px}
+.pad span{display:block;margin-top:4px}
+#home #ap::before{content:"সেবা ও ফিচার";grid-column:1/-1;font:800 15px 'Baloo Da 2';border-bottom:2px solid var(--ember)}
+#home .app{grid-template-columns:repeat(4,1fr);gap:12px 4px;margin:10px 0;background:var(--card)!important;border-radius:6px;padding:10px 4px!important;backdrop-filter:none!important}
+#home .ic i{width:56px;height:56px;border-radius:16px;font-size:28px}#home .ic{font-size:11.5px;text-align:center}
+.np .rp:has(span:empty){display:none}
+.ex .ei .no{display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px}
+.ex .memo{width:100%;max-height:320px;object-fit:contain;border-radius:8px;margin-top:6px;background:rgba(0,0,0,.05)}
+.ex div.memo{padding:16px;text-align:center;border:2px dashed var(--line);color:var(--mut);font-size:13px;background:none}
+.ex .sub{margin-top:8px;padding:8px;background:rgba(0,0,0,.04);border-radius:10px}
+.ex .sub .row{padding:5px 0}.ex .sub input{margin:4px 0;padding:8px;font-size:14px}.ex .sub button.x{border:0;background:none;color:var(--bad);font-size:16px}
+/* ===== প্রথম আলো/কালবেলা স্টাইল ===== */
+header{display:flex!important;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)!important;padding:10px 14px!important}
+header .logo{justify-content:flex-start;text-align:left}header .logo b{font-size:26px;color:var(--ink)}
+header .logo span{letter-spacing:1px;text-transform:none}
+#pmenu{border:0;background:none;color:var(--ink);font-size:28px;line-height:1;cursor:pointer;padding:4px 6px}
+#pnav{position:sticky;top:var(--nh,0);z-index:15;display:flex;gap:2px;overflow-x:auto;background:var(--card);border-bottom:3px solid var(--line);scrollbar-width:none}
+#pnav::-webkit-scrollbar{display:none}
+#pnav a{flex:none;padding:12px 13px;font:700 17px 'Hind Siliguri';color:var(--ink);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-3px}
+#pnav a.on{color:var(--ember);border-color:var(--ember)}
+main{margin-top:0!important;max-width:760px;padding:0 12px!important}
+.pf .ph{display:none}
+.pf .pad{background:#F3F3F3;border:0;border-radius:0;padding:16px 0 0;margin:10px 0;overflow:hidden}
+.pf .pad b{left:4px;right:auto;top:1px;font-size:10px}
+.pf .pad img{max-height:none;width:100%;border-radius:0}
+.pf .pad span{padding:6px}
+.pf .lead{border:0;background:none;margin:0 -12px 6px}
+.pf .lead img{max-height:none;aspect-ratio:16/10}
+.pf .lead div{padding:10px 12px 0}
+.pf .lead h2{font:800 25px/1.35 'Hind Siliguri',sans-serif;color:var(--ink)}
+.pf .lead p{font-size:16px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:6px}
+.pf .pg{display:grid;grid-template-columns:1fr 1fr;gap:16px 12px;margin-top:10px}
+.pf .pg .pad{grid-column:1/-1;margin:0}
+.pf .pg .it2{flex-direction:column;border:0;background:none;margin:0;gap:0}
+.pf .pg .it2 img{width:100%;aspect-ratio:4/3;border-radius:6px}
+.pf .pg .it2 div,.pf .pg .it2 img+div,.pf .pg .it2:not(:has(img)) div{padding:8px 0 0}
+.pf .pg .it2 h3{font:800 17px/1.4 'Hind Siliguri',sans-serif;color:var(--ink)}
+.pf .pg .it2 p{display:none}
+.pf .pg .it2 h3::first-line{color:inherit}
+
+</style>
+<script id="byc-portal">
+(function(){
+if(typeof st==="undefined"||typeof X==="undefined"||typeof fd==="undefined"||typeof F==="undefined")return;
+var g=function(i){return document.getElementById(i)};
+st.adImgs=st.adImgs||[];st.exp=st.exp||[];st.expCats=st.expCats||["ডেকোরেশন","কাঁচা বাজার","মুদি বাজার","মাঠ সাজানো","গাড়ি ভাড়া"];
+var PA={img:"",cap:""},cf="";
+function shr(f,mx,q,cb){var im=new Image(),u=URL.createObjectURL(f);im.onload=function(){var s=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);cb(c.toDataURL("image/jpeg",q))};im.src=u}
+/* ---------- বিজ্ঞাপনের ঘর (ফটো/লেখা) ---------- */
+function adBox(n){var A=st.adImgs||[];if(A.length){var a=A[n%A.length];return'<div class="pad"><b>বিজ্ঞাপন</b><img src="'+a.img+'" alt="বিজ্ঞাপন">'+(a.cap?'<span>'+esc(a.cap)+'</span>':'')+'</div>'}
+ var t=(st.ads||[]).filter(Boolean);return'<div class="pad"><b>বিজ্ঞাপন</b><span>'+esc(t.length?t[n%t.length]:"আপনার বিজ্ঞাপন এখানে দিন")+'</span></div>'}
+function adMgr(){var h='<div class="bx"><h3 style="margin:0 0 6px">🖼️ ফটো বিজ্ঞাপন যোগ করুন</h3><div class="row"><label class="btn s n" style="margin:0">📷 ছবি বাছুন<input type="file" accept="image/*" data-pad="f" style="display:none"></label>'+(PA.img?'<img src="'+PA.img+'" style="height:44px;border-radius:6px">':'<span class="note">ছবি বাছা হয়নি</span>')+'</div><input data-pad="cap" placeholder="বিজ্ঞাপনের লেখা / ফোন (ঐচ্ছিক)" value="'+esc(PA.cap)+'"><button class="btn g" data-pad="add">＋ বিজ্ঞাপন বসান</button>';
+ st.adImgs.forEach(function(a,i){h+='<div class="row"><img src="'+a.img+'" style="height:44px;border-radius:6px"><span class="note">'+esc(a.cap||"")+'</span><button class="btn s r" data-pad="del:'+i+'">🗑</button></div>'});return h+'</div>'}
+var _xn=X.news;X.news=function(){var h=_xn().replace(/<div class="adc">.*?<\/div>/g,""),p=h.split('<div class="bx nc">'),o=p[0],k;
+ for(k=1;k<p.length;k++){o+='<div class="bx nc">'+p[k];if(k%2===1&&k<p.length-1)o+=adBox((k-1)/2)}
+ return(st.admin?adMgr():"")+o};
+fd.addEventListener("input",function(e){if(e.target.dataset&&e.target.dataset.pad==="cap")PA.cap=e.target.value});
+fd.addEventListener("change",function(e){var t=e.target;if(t.dataset&&t.dataset.pad==="f"&&t.files[0])shr(t.files[0],900,.72,function(u){PA.img=u;fdraw()});
+ if(t.dataset&&t.dataset.nwp)setTimeout(fdraw,60)});
+fd.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-pad],[data-nw]");if(!b)return;var a=(b.dataset.pad||"").split(":");
+ if(a[0]==="add"){if(!PA.img){alert("আগে বিজ্ঞাপনের ছবি বাছুন");return}st.adImgs.unshift({img:PA.img,cap:PA.cap.trim()});PA={img:"",cap:""};fdraw()}
+ else if(a[0]==="del"){if(confirm("বিজ্ঞাপনটি মুছবেন?")){st.adImgs.splice(+a[1],1);fdraw()}}
+ else if(b.dataset.nw&&g("npRoot"))setTimeout(fdraw,0)});
+/* ---------- হোম: সরাসরি নিউজ ফিড ---------- */
+var home=g("home"),pfeed=document.createElement("div");pfeed.id="pfeed";pfeed.className="pf";home.insertBefore(pfeed,home.firstChild);
+function ex(t,n){t=String(t||"");return esc(t.length>n?t.slice(0,n)+"…":t)}
+function feed(){var L=(st.np||[]).slice().reverse(),h=adBox(0),c="";
+ if(!L.length)h+='<p class="note">এখনো কোনো সংবাদ নেই।</p>';
+ L.forEach(function(n,i){var im=n.img?'<img src="'+n.img+'" alt="">':'';
+  if(i===0)h+='<article class="lead" data-go>'+im+'<div><h2>'+esc(n.t)+'</h2><p>'+ex(n.b,160)+'</p></div></article>'+adBox(1);
+  else{c+='<article class="it2" data-go>'+im+'<div><h3>'+esc(n.t)+'</h3></div></article>';if(i%4===0)c+=adBox(i/4+1)}});
+ pfeed.innerHTML=h+(c?'<div class="pg">'+c+'</div>':"")}
+pfeed.addEventListener("click",function(e){if(!e.target.closest("[data-go]"))return;var b=[].slice.call(document.querySelectorAll("#ap .ic")).filter(function(x){return x.textContent.indexOf("নিউজ")>=0})[0];if(b)b.click()});
+var hd=document.querySelector("header"),mb=document.createElement("button");mb.id="pmenu";mb.textContent="☰";mb.setAttribute("aria-label","মেনু");mb.onclick=function(){var a=g("ap");if(a)a.scrollIntoView({behavior:"smooth"})};if(hd)hd.appendChild(mb);
+var nv=document.createElement("div");nv.id="pnav";
+[["সর্বশেষ",""],["নিউজ","নিউজ"],["খেলা","খেলা"],["ফান্ড","ফান্ড"],["নোটিশ","নোটিশ"],["খরচ","খরচের"],["ফটো এনহ্যান্স","এনহ্যান্সার"],["আইডি","আইডি"],["সার্টিফিকেট","সার্টিফিকেট"]].forEach(function(x,i){var a=document.createElement("a");a.textContent=x[0];if(!i)a.className="on";
+ a.onclick=function(){if(!x[1]){window.scrollTo({top:0,behavior:"smooth"});return}var b=[].slice.call(document.querySelectorAll("#ap .ic")).filter(function(q){return q.textContent.indexOf(x[1])>=0})[0];if(b)b.click()};nv.appendChild(a)});
+if(hd)hd.parentNode.insertBefore(nv,hd.nextSibling);
+var sig="";function chk(){var s=(st.np||[]).map(function(n){return n.id+n.t+(n.b||"").length+(n.img||"").length}).join()+"|"+(st.adImgs||[]).map(function(a){return(a.img||"").length+(a.cap||"")}).join()+"|"+(st.ads||[]).join();if(s!==sig){sig=s;feed()}}
+chk();setInterval(chk,1200);
+/* ---------- খরচের বিবরণ (ক্রমানুসারে, মেমো ছবি, অতিরিক্ত হিসাব) ---------- */
+function sm(a){return a.reduce(function(t,x){return t+x},0)}
+function net(e){var it=e.items||[];return it.length?sm(it.map(function(x){return+x.a||0})):e.amt-(e.back||0)}
+function sync(){st.spent=st.exp.map(function(e){return[e.c,net(e)]});if(typeof homeRef==="function")homeRef()}
+function pxBody(){var adm=st.admin,out=sm(st.exp.map(net)),bl=bal(),inc=bl+out;
+ var h='<div class="sm"><div><small>মোট জমা</small><b>৳'+bn(inc)+'</b></div><div><small>মোট খরচ</small><b>৳'+bn(out)+'</b></div><div><small>বর্তমান ফান্ড</small><b>৳'+bn(bl)+'</b></div></div>'
+ +'<div class="chips"><button data-px="c:" class="'+(cf?"":"on")+'">সব</button>'+st.expCats.map(function(c,i){return'<button data-px="c:'+i+'" class="'+(cf===c?"on":"")+'">'+esc(c)+'</button>'}).join("")+(adm?'<button data-px="nc">＋ ক্যাটাগরি</button>':"")+'</div>';
+ if(adm)h+='<div class="bx"><h3 style="margin:0 0 6px">নতুন খরচ (টাকা প্রদান)</h3><select id="pxC">'+st.expCats.map(function(c){return"<option>"+esc(c)+"</option>"}).join("")+'</select><select id="pxM">'+members.map(function(m,i){return m.a&&!m.kid?'<option value="'+i+'">'+esc(m.n)+' · '+esc(m.idn||"")+'</option>':""}).join("")+'</select><input id="pxA" type="number" placeholder="প্রদত্ত টাকা"><input id="pxN" placeholder="কীসের জন্য (ঐচ্ছিক)"><p id="pxE" style="color:var(--bad);font-weight:700;margin:0"></p><button class="btn g" data-px="add">＋ যোগ করুন</button></div>';
+ var any=0;st.exp.forEach(function(e,i){if(cf&&e.c!==cf)return;any=1;var its=e.items||[];
+  h+='<div class="bx ei"><div class="row"><b><span class="no">'+bn(i+1)+'</span> '+esc(e.c)+'</b><b>৳'+bn(net(e))+'</b></div><small>'+esc(e.who)+' · '+esc(e.idn||"")+' · '+esc(e.d)+'</small>'+(e.note?'<div>'+esc(e.note)+'</div>':"")
+  +'<small style="display:block">প্রদত্ত ৳'+bn(e.amt)+(its.length?' · হিসাবকৃত ৳'+bn(net(e))+' · বাকি/ফেরত ৳'+bn(e.amt-net(e)):(e.back?' · ফেরত ৳'+bn(e.back):""))+'</small>'
+  +(e.rcpt?'<img class="memo" src="'+e.rcpt+'" alt="মেমো">':'<div class="memo">🧾 মেমো এখনো যোগ হয়নি</div>')
+  +(adm?'<div style="margin-top:6px"><label class="btn s n" style="margin:0">🧾 মেমো আপলোড<input type="file" accept="image/*" data-pxf="'+i+'" style="display:none"></label> <button class="btn s r" data-px="x:'+i+'">🗑 মুছুন</button></div>':"")
+  +'<div class="sub"><b>অতিরিক্ত খরচের হিসাব</b>'+(its.length?"":'<p class="note" style="margin:2px 0">এখনো কোনো হিসাব যোগ হয়নি।</p>')
+  +its.map(function(x,j){return'<div class="row"><span>'+bn(j+1)+'. '+esc(x.t)+'</span><span><b>৳'+bn(x.a)+'</b>'+(adm?' <button class="x" data-px="id:'+i+':'+j+'">✕</button>':"")+'</span></div>'}).join("")
+  +(adm?'<input id="pxT'+i+'" placeholder="কীসের খরচ"><input id="pxU'+i+'" type="number" placeholder="টাকা"><button class="btn s g" data-px="ia:'+i+'">＋ হিসাব যোগ</button>':"")+'</div></div>'});
+ return h+(any?"":'<p class="note">কোনো খরচ নেই।</p>')}
+X.expn=function(){return'<div class="ex" id="pxRoot">'+pxBody()+'</div>'};
+function redraw(){var r=g("pxRoot");if(r)r.innerHTML=pxBody();sync()}
+fd.addEventListener("change",function(e){var t=e.target;if(t.dataset&&t.dataset.pxf!==undefined&&t.files[0])shr(t.files[0],900,.7,function(u){st.exp[+t.dataset.pxf].rcpt=u;redraw()})});
+fd.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-px]");if(!b||!g("pxRoot"))return;var a=b.dataset.px.split(":"),k=a[0];
+ if(k==="c")cf=a[1]===""?"":st.expCats[+a[1]];
+ else if(k==="nc"){var c=prompt("নতুন খরচের ক্যাটাগরি");if(c&&c.trim())st.expCats.push(c.trim())}
+ else if(k==="add"){var m=members[g("pxM").value],am=+toen(g("pxA").value||"0");if(!m||am<=0){g("pxE").textContent="সদস্য ও টাকার পরিমাণ দিন";return}
+  st.exp.push({id:Date.now(),c:g("pxC").value,who:m.n,idn:m.idn||"",amt:am,back:0,d:td(),note:g("pxN").value.trim(),rcpt:"",items:[]})}
+ else if(k==="x"){if(!confirm("এই খরচ মুছবেন?"))return;st.exp.splice(+a[1],1)}
+ else if(k==="ia"){var i=+a[1],t=g("pxT"+i).value.trim(),u=+toen(g("pxU"+i).value||"0");if(!t||u<=0){alert("খরচের বিবরণ ও টাকা দিন");return}(st.exp[i].items=st.exp[i].items||[]).push({t:t,a:u})}
+ else if(k==="id"){st.exp[+a[1]].items.splice(+a[2],1)}
+ redraw()});
+sync();
+})();
+
+</script>
 </body>
 </html>
