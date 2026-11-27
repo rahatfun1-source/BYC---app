@@ -1613,5 +1613,95 @@ setTimeout(refreshBtn,800);
 })();
 </script>
 
+<style id="byc-ln-css">
+.ln .bx{background:var(--card,#fff);border:1px solid var(--line);border-radius:16px;padding:12px;margin:10px 0}
+.ln .bx h3{margin:0 0 6px;font-size:16px;color:var(--navy)}
+.ln label{display:block;font-weight:700;font-size:13px;margin:8px 0 3px;color:var(--mut)}
+.ln input[type=text],.ln input:not([type]),.ln input[type=tel],.ln select,.ln textarea{width:100%;box-sizing:border-box}
+.ln .am{display:flex;gap:6px;flex-wrap:wrap}.ln .am button{flex:1;padding:12px 0;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:800 15px 'Hind Siliguri'}
+.ln .am button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.ln .tm{font-size:13px;line-height:1.6;margin:4px 0;padding-left:4px}
+.ln .st{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;color:#fff}
+.ln .pg{height:8px;background:var(--line);border-radius:9px;overflow:hidden;margin:6px 0}.ln .pg i{display:block;height:100%;background:var(--ok,#18A058)}
+#frog{position:fixed;z-index:1;left:11.5vw;top:75vh;width:46px;margin:-40px 0 0 -23px;pointer-events:none;transition:left .75s ease-in-out,top .75s ease-in-out;display:none}
+#frog svg{display:block;width:100%}#frog.j svg{animation:fhop .75s ease-in-out}
+@keyframes fhop{0%,100%{transform:translateY(0) scale(1,1)}20%{transform:translateY(0) scale(1.15,.8)}55%{transform:translateY(-70px) scale(.88,1.15)}85%{transform:translateY(0) scale(1.1,.85)}}
+</style>
+<script id="byc-ln">
+(function(){
+if(typeof st==="undefined"||typeof F==="undefined"||typeof X==="undefined"||typeof fd==="undefined")return;
+var g=function(i){return document.getElementById(i)};
+if(!st.ln2)st.ln2=[];
+if(!st.lnTerms)st.lnTerms=["ঋণের পরিমাণ ৫০০ থেকে ২,০০০ টাকার মধ্যে হবে।","ঋণের মেয়াদ সর্বোচ্চ ৩ মাস।","কিস্তি প্রতি মাসের ১ থেকে ১০ তারিখের মধ্যে অফিসে এসে জমা দিতে হবে।","সাপ্তাহিক কোনো কিস্তি নেই।","প্রতি কিস্তির সাথে নির্ধারিত সঞ্চয় জমা দিতে হবে।","কিস্তি দিতে দেরি হলে কমিটি ব্যবস্থা নিতে পারবে।","ঋণের টাকা শুধু আবেদনে উল্লেখিত কারণে ব্যবহার করতে হবে।","গ্যারেন্টার ঋণ পরিশোধে দায়ী থাকবেন।","ভুল তথ্য দিলে আবেদন বাতিল হবে।","কমিটির সিদ্ধান্তই চূড়ান্ত।"];
+var L={f:{amt:1000,ms:"অবিবাহিত",gms:"অবিবাহিত"},v:"form"},LB={};
+function I(k,l,t){LB[k]=l;return'<label>'+l+'</label><input data-nlf="'+k+'" '+(t?'type="'+t+'" ':'')+'value="'+esc(L.f[k]||"")+'">'}
+function pic(k,l){LB[k]=l;return'<div class="row" style="margin-top:8px"><label class="btn s n" style="margin:0;color:var(--ink)">📷 '+l+'<input type="file" accept="image/*" data-nlp="'+k+'" style="display:none"></label>'+(L.f[k]?'<img src="'+L.f[k]+'" style="height:44px;border-radius:8px">':'<span class="note">নেই</span>')+'</div>'}
+function addr(p){var h='<h3 style="margin-top:12px">বর্তমান ঠিকানা</h3>'+I(p+"pv","গ্রাম")+I(p+"pp","ডাকঘর")+I(p+"pu","উপজেলা")+I(p+"pd","জেলা");
+ h+='<h3 style="margin-top:12px">স্থায়ী ঠিকানা</h3><label style="font-weight:600"><input type="checkbox" data-nsame="'+p+'" '+(L.f[p+"same"]?"checked":"")+'> বর্তমান ঠিকানার সাথে একই</label>'+I(p+"tv","গ্রাম")+I(p+"tp","ডাকঘর")+I(p+"tu","উপজেলা")+I(p+"td","জেলা");return h}
+function person(p,t){var h='<div class="bx"><h3>'+t+'</h3>'+I(p+"n","নাম")+I(p+"fa","পিতার নাম")+I(p+"mo","মাতার নাম")+I(p+"ph","মোবাইল নম্বর","tel")+'<label>বৈবাহিক অবস্থা</label><select data-nlf="'+p+'ms">'+["অবিবাহিত","বিবাহিত"].map(function(o){return'<option'+(L.f[p+"ms"]===o?" selected":"")+'>'+o+'</option>'}).join("")+'</select>';
+ if(L.f[p+"ms"]==="বিবাহিত")h+=I(p+"sp","স্বামী/স্ত্রীর নাম")+I(p+"spf","স্বামী/স্ত্রীর পিতার নাম")+I(p+"spm","স্বামী/স্ত্রীর মাতার নাম");
+ return h+pic(p+"pic","ছবি")+pic(p+"doc","নথি (NID/জন্মনিবন্ধন)")+addr(p)+'</div>'}
+function form(){
+ var h='<div class="bx"><h3>ঋণের পরিমাণ (৩ মাস মেয়াদ)</h3><div class="am">'+[500,1000,1500,2000].map(function(a){return'<button data-namt="'+a+'" class="'+(L.f.amt===a?"on":"")+'">৳'+bn(a)+'</button>'}).join("")+'</div><p class="note">ফান্ডে টাকা না থাকলেও আবেদন করা যাবে। অ্যাডমিন যাচাই করে অনুমোদন দেবেন।</p></div>'
+ +person("a","আবেদনকারীর তথ্য")
+ +'<div class="bx"><h3>নমিনির তথ্য</h3>'+I("nn","নমিনির নাম")+I("nr","সম্পর্ক")+I("nph","মোবাইল নম্বর","tel")+pic("npic","নমিনির ছবি")+'</div>'
+ +'<div class="bx"><h3>ঋণ আবেদনের কারণ</h3><textarea data-nlf="rs" rows="3">'+esc(L.f.rs||"")+'</textarea></div>'
+ +person("g","গ্যারেন্টারের তথ্য")
+ +'<div class="bx"><h3>শর্তাবলি</h3>'+st.lnTerms.map(function(t,i){return'<div class="tm">'+bn(i+1)+'. '+esc(t)+'</div>'}).join("")+'<label style="font-weight:700"><input type="checkbox" data-nlf="ag" '+(L.f.ag?"checked":"")+'> আমি সব শর্ত মেনে নিলাম</label><p id="lnE" style="color:var(--bad);font-weight:700"></p><button class="btn g" data-nla="send">📨 আবেদন জমা দিন</button></div>';return h}
+function inst(x){return Math.round(x.amt/3)}
+function paid(x){return x.pay.reduce(function(t,p){return t+p.i},0)}
+var SC={pending:["#E08A00","অপেক্ষমান"],ok:["#18A058","অনুমোদিত"],no:["#D83A3A","বাতিল"],done:["#2B6FD4","পরিশোধিত"]};
+function card(x,i,adm){var s=SC[x.s],p=paid(x),sv=x.pay.reduce(function(t,q){return t+q.s},0);
+ var h='<div class="bx"><div class="row"><b>'+esc(x.by)+' · ৳'+bn(x.amt)+'</b><span class="st" style="background:'+s[0]+'">'+s[1]+'</span></div><small>আবেদন: '+esc(x.d)+' · ৩ মাস · কিস্তি ৳'+bn(inst(x))+'/মাস</small>'
+ +'<div class="pg"><i style="width:'+Math.min(100,p/x.amt*100)+'%"></i></div><small>পরিশোধ ৳'+bn(p)+' · সঞ্চয় ৳'+bn(sv)+' · <b>বাকি ৳'+bn(Math.max(0,x.amt-p))+'</b></small>';
+ if(x.s==="ok")h+='<p class="note">কিস্তি প্রতি মাসের ১–১০ তারিখে অফিসে এসে জমা দিন।</p>';
+ if(x.pay.length)h+='<div class="note">'+x.pay.map(function(q){return esc(q.d)+': ৳'+bn(q.i)+' + সঞ্চয় ৳'+bn(q.s)}).join("<br>")+'</div>';
+ if(adm){h+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="btn s n" data-nla="view:'+i+'">👁 বিস্তারিত</button>'+(x.s==="pending"?'<button class="btn s g" data-nla="ok:'+i+'">✔ অনুমোদন</button><button class="btn s" style="background:#D83A3A;color:#fff" data-nla="no:'+i+'">✖ বাতিল</button>':"")+(x.s==="ok"?'<button class="btn s g" data-nla="pay:'+i+'">💵 কিস্তি নিন</button>':"")+'</div>'+(L.open===i?detail(x):"")}
+ return h+'</div>'}
+function detail(x){var h='<div style="margin-top:8px;font-size:13px">';Object.keys(x.f).forEach(function(k){var v=x.f[k];if(!v||k==="amt"||k==="ag"||/same$/.test(k))return;
+ h+=String(v).indexOf("data:image")===0?'<div>'+esc(LB[k]||k)+': <img src="'+v+'" style="height:70px;border-radius:8px;vertical-align:middle"></div>':'<div><b>'+esc(LB[k]||k)+':</b> '+esc(v)+'</div>'});return h+'</div>'}
+function termsEd(){return'<div class="bx"><h3>শর্ত সম্পাদনা (অ্যাডমিন)</h3><p class="note">প্রতি লাইনে একটি শর্ত।</p><textarea id="lnT" rows="8">'+esc(st.lnTerms.join("\n"))+'</textarea><button class="btn s g" data-nla="terms">সংরক্ষণ</button></div>'}
+X.lnapp=function(){return'<div class="ln" id="lnRoot">'+body()+'</div>'};
+function body(){var m=st.me,mine=st.ln2.map(function(x,i){return[x,i]}).filter(function(a){return st.admin||(m&&a[0].mem===m.idn)});
+ var h='<div class="chips" style="display:flex;gap:6px;margin:8px 0">'+(st.admin?'<button class="btn s '+(L.v==="adm"?"":"n")+'" data-nlv="adm">সব আবেদন</button><button class="btn s '+(L.v==="trm"?"":"n")+'" data-nlv="trm">শর্ত</button>':'<button class="btn s '+(L.v==="form"?"":"n")+'" data-nlv="form">নতুন আবেদন</button><button class="btn s '+(L.v==="mine"?"":"n")+'" data-nlv="mine">আমার ঋণ</button>')+'</div>';
+ if(st.admin){if(L.v==="form"||L.v==="mine")L.v="adm";return h+(L.v==="trm"?termsEd():(mine.map(function(a){return card(a[0],a[1],1)}).join("")||'<p class="note">কোনো আবেদন নেই।</p>'))}
+ if(!m)return'<p class="note">আবেদন করতে সদস্য হিসেবে লগইন করুন।</p>';
+ if(L.v==="mine")return h+(mine.map(function(a){return card(a[0],a[1],0)}).join("")||'<p class="note">আপনার কোনো আবেদন নেই।</p>');
+ return h+form()}
+function draw(){var r=g("lnRoot");if(r)r.innerHTML=body()}
+function shrink(f,cb){var im=new Image(),u=URL.createObjectURL(f);im.onload=function(){var s=Math.min(1,500/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);cb(c.toDataURL("image/jpeg",.7))};im.src=u}
+function check(){var f=L.f,ph=/^01\d{9}$/,need=function(p,t){var a=[[p+"n","নাম"],[p+"fa","পিতার নাম"],[p+"mo","মাতার নাম"],[p+"pv","বর্তমান গ্রাম"],[p+"pp","বর্তমান ডাকঘর"],[p+"pu","বর্তমান উপজেলা"],[p+"pd","বর্তমান জেলা"],[p+"tv","স্থায়ী গ্রাম"],[p+"tp","স্থায়ী ডাকঘর"],[p+"tu","স্থায়ী উপজেলা"],[p+"td","স্থায়ী জেলা"]];
+  if(f[p+"ms"]==="বিবাহিত")a.push([p+"sp","স্বামী/স্ত্রীর নাম"],[p+"spf","স্বামী/স্ত্রীর পিতার নাম"],[p+"spm","স্বামী/স্ত্রীর মাতার নাম"]);
+  for(var i=0;i<a.length;i++)if(!f[a[i][0]])return t+": "+a[i][1]+" দিন";if(!ph.test(toen(f[p+"ph"]||"")))return t+": সঠিক মোবাইল নম্বর দিন";if(!f[p+"pic"])return t+": ছবি যোগ করুন"};
+ return need("a","আবেদনকারী")||(!f.nn||!f.nr?"নমিনির নাম ও সম্পর্ক দিন":"")||(!ph.test(toen(f.nph||""))?"নমিনির সঠিক মোবাইল নম্বর দিন":"")||(!f.npic?"নমিনির ছবি যোগ করুন":"")||(!f.rs?"ঋণের কারণ লিখুন":"")||need("g","গ্যারেন্টার")||(!f.ag?"শর্তে সম্মতি দিন":"")}
+fd.addEventListener("input",function(e){var k=e.target.dataset&&e.target.dataset.nlf;if(k&&e.target.type!=="checkbox")L.f[k]=e.target.value});
+fd.addEventListener("change",function(e){var t=e.target,d=t.dataset||{};
+ if(d.nlf==="ag")L.f.ag=t.checked;
+ if(d.nlf&&/ms$/.test(d.nlf)){L.f[d.nlf]=t.value;draw()}
+ if(d.nlp&&t.files[0])shrink(t.files[0],function(u){L.f[d.nlp]=u;draw()});
+ if(d.nsame){var p=d.nsame;L.f[p+"same"]=t.checked;if(t.checked)["v","p","u","d"].forEach(function(s){L.f[p+"t"+s]=L.f[p+"p"+s]||""});draw()}});
+fd.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-namt],[data-nlv],[data-nla]");if(!b||!g("lnRoot"))return;var d=b.dataset;
+ if(d.namt){L.f.amt=+d.namt;draw()}
+ else if(d.nlv){L.v=d.nlv;draw()}
+ else if(d.nla==="send"){var er=check(),m=st.me;if(er){g("lnE").textContent=er;return}
+  st.ln2.push({by:m.n,mem:m.idn,amt:L.f.amt,f:Object.assign({},L.f),s:"pending",d:td(),pay:[]});L.f={amt:1000,ms:"অবিবাহিত",gms:"অবিবাহিত"};L.v="mine";draw()}
+ else if(d.nla==="terms"){st.lnTerms=g("lnT").value.split("\n").map(function(s){return s.trim()}).filter(Boolean);draw()}
+ else if(d.nla){var a=d.nla.split(":"),x=st.ln2[+a[1]];
+  if(a[0]==="view"){L.open=L.open===+a[1]?-1:+a[1]}
+  if(a[0]==="ok")x.s="ok";if(a[0]==="no")x.s="no";
+  if(a[0]==="pay"){var i=prompt("কিস্তির টাকা (প্রস্তাবিত ৳"+inst(x)+")",inst(x));if(i===null)return;var s=prompt("সঞ্চয়ের টাকা","0");x.pay.push({d:td(),i:+toen(i)||0,s:+toen(s||"0")||0});if(paid(x)>=x.amt)x.s="done"}
+  draw()}});
+/* ফিচার + আইকন */
+var idx=F.length;F.push([bn(idx+1)+". ঋণ আবেদন","lnapp"]);if(typeof EM!=="undefined")EM.push("💳");
+function icon(d){var b=document.createElement("button");b.className="ic";b.style.cssText="--a:#18A058;--b:#2B6FD4;--d:"+d+"s";b.innerHTML="<i><span>💳</span></i>ঋণ আবেদন";b.onclick=function(){st.cur=idx;st.view=-1;st.cw=-1;fdraw()};return b}
+var ap2=g("ap"),fg2=g("fg");if(ap2)ap2.insertBefore(icon(.2),ap2.children[1]||null);if(fg2)fg2.appendChild(icon(.5));
+/* ---------- লাফানো হলুদ ব্যাঙ (লগইন/নিবন্ধন পাতা) ---------- */
+var fr=document.createElement("div");fr.id="frog";fr.innerHTML='<svg viewBox="0 0 60 50"><ellipse cx="30" cy="32" rx="22" ry="15" fill="#FFD21F" stroke="#C99A00" stroke-width="1.5"/><circle cx="19" cy="16" r="8" fill="#FFD21F" stroke="#C99A00" stroke-width="1.5"/><circle cx="41" cy="16" r="8" fill="#FFD21F" stroke="#C99A00" stroke-width="1.5"/><circle cx="19" cy="15" r="4.5" fill="#fff"/><circle cx="41" cy="15" r="4.5" fill="#fff"/><circle cx="20" cy="15.5" r="2.3" fill="#222"/><circle cx="42" cy="15.5" r="2.3" fill="#222"/><path d="M20 34q10 7 20 0" fill="none" stroke="#7A4B00" stroke-width="2" stroke-linecap="round"/><ellipse cx="12" cy="46" rx="8" ry="3.5" fill="#F2B800"/><ellipse cx="48" cy="46" rx="8" ry="3.5" fill="#F2B800"/></svg>';document.body.appendChild(fr);fr.style.zIndex=(parseInt(getComputedStyle(gate).zIndex)||90)+1;
+var P=[[11.5,75],[34.6,83.5],[86,70],[34.6,83.5]],pi=0;
+function hop(){if(gate.style.display==="none"){fr.style.display="none";return}fr.style.display="block";pi=(pi+1)%P.length;fr.classList.remove("j");void fr.offsetWidth;fr.classList.add("j");fr.style.left=P[pi][0]+"vw";fr.style.top=P[pi][1]+"vh"}
+setInterval(hop,2200);setTimeout(hop,400);
+})();
+</script>
+
 </body>
 </html>
