@@ -1464,7 +1464,7 @@ function load(f){
 /* ---------- UI ---------- */
 function outSize(){var sc=+S.v.scale||1,lg=Math.max(S.w,S.h),tl=Math.min(lg*sc,MAXF),k=tl/lg;return[Math.max(1,Math.round(S.w*k)),Math.max(1,Math.round(S.h*k))]}
 function info(){var e=g("enInfo");if(!e||!S.img)return;var o=outSize();e.textContent="আউটপুট: "+bn(o[0])+" × "+bn(o[1])+" পিক্সেল"+(Math.max(S.w,S.h)*(+S.v.scale||1)>MAXF?" (ফোনের মেমোরির জন্য সর্বোচ্চ সীমায়)":"")}
-function resHtml(){if(!S.res)return"";var u=S.res.u;return'<div class="res"><img alt="উন্নত করা ছবি" src="'+u+'"><div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a class="btn g" style="text-decoration:none" href="'+u+'" download="'+S.res.n+'">💾 সংরক্ষণ</a><button class="btn n" data-enact="share">📤 শেয়ার</button></div><p class="note">সংরক্ষণ না হলে ছবিটি চেপে ধরে “ছবি সংরক্ষণ” বেছে নিন।</p></div>'}
+function resHtml(){if(!S.res)return"";var u=S.res.u;return'<div class="res"><img alt="উন্নত করা ছবি" src="'+u+'"><div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a class="btn g" style="text-decoration:none" href="'+u+'" download="'+S.res.n+'">💾 সংরক্ষণ</a><button class="btn n" data-enact="share">📤 শেয়ার</button><button class="btn n" data-enact="toprofile">👤 প্রোফাইলে শেয়ার</button></div><p class="note">সংরক্ষণ না হলে ছবিটি চেপে ধরে “ছবি সংরক্ষণ” বেছে নিন।</p></div>'}
 function shell(){
  var h='<p class="note">ঝাপসা, পুরনো বা কম আলোর ছবি পরিষ্কার ও উজ্জ্বল করুন। ছবি আপনার ফোনেই প্রসেস হয় — কোথাও আপলোড হয় না, সম্পূর্ণ ফ্রি।</p>'
  +'<label class="drop"><span style="font-size:38px">🖼️</span><b>'+(S.img?"অন্য ছবি বাছুন":"ছবি বাছুন")+'</b><span>গ্যালারি বা ক্যামেরা থেকে</span><input type="file" accept="image/*" id="enF" style="display:none"></label><p class="note" id="enSt" role="status"></p>';
@@ -1700,6 +1700,118 @@ var fr=document.createElement("div");fr.id="frog";fr.innerHTML='<svg viewBox="0 
 var P=[[11.5,75],[34.6,83.5],[86,70],[34.6,83.5]],pi=0;
 function hop(){if(gate.style.display==="none"){fr.style.display="none";return}fr.style.display="block";pi=(pi+1)%P.length;fr.classList.remove("j");void fr.offsetWidth;fr.classList.add("j");fr.style.left=P[pi][0]+"vw";fr.style.top=P[pi][1]+"vh"}
 setInterval(hop,2200);setTimeout(hop,400);
+})();
+</script>
+
+<style id="byc-fx-css">
+.fx .bx{background:var(--card,#fff);border:1px solid var(--line);border-radius:16px;padding:12px;margin:10px 0}
+.fx .bx h3{margin:0 0 6px;font-size:16px;color:var(--navy)}
+.fx .big{font-size:26px;font-weight:800}
+.fx .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center}
+.fx .g3 small{display:block;color:var(--mut)}
+.fx input,.fx select{width:100%;box-sizing:border-box;margin:3px 0}
+.fx .ch{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.fx .ch button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:7px 12px;font:600 13px 'Hind Siliguri'}.fx .ch button.on{background:var(--navy);color:#fff}
+.fx a.call{display:inline-block;background:#18A058;color:#fff;border-radius:99px;padding:5px 12px;text-decoration:none;font-weight:700;font-size:13px}
+</style>
+<script id="byc-fx">
+(function(){
+if(typeof st==="undefined"||typeof F==="undefined"||typeof X==="undefined"||typeof fd==="undefined")return;
+var g=function(i){return document.getElementById(i)};
+if(!st.exc)st.exc=["ডেকোরেশন","কাঁচা বাজার","মুদি বাজার","মাঠ সাজানো","গাড়ি ভাড়া"];
+if(!st.exp2)st.exp2=[];
+if(!st.ec2)st.ec2=[{c:"বিরোপাড়া তরুন সংঘ",e:"🏠",i:[]},{c:"ফায়ার সার্ভিস",e:"🚒",i:[]},{c:"বিদ্যুৎ অফিস",e:"💡",i:[]},{c:"থানা",e:"🚓",i:[]},{c:"হাসপাতাল",e:"🏥",i:[]}];
+var E={cat:"সব"};
+function tel(x){return String(x||"").replace(/[^\d+]/g,"")}
+function money(a){return"৳"+bn(Math.round(a))}
+function shrink(f,cb){var im=new Image(),u=URL.createObjectURL(f);im.onload=function(){var s=Math.min(1,700/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);cb(c.toDataURL("image/jpeg",.7))};im.src=u}
+/* ---------- খরচের বিবরণ + লাইভ ফান্ড ---------- */
+function totals(){var inc=(st.donors||[]).reduce(function(t,d){return t+(+d[1]||0)},0),out=st.exp2.reduce(function(t,x){return t+x.a-(x.r||0)},0);return[inc,out,inc-out]}
+X.fxexp=function(){return'<div class="fx" id="fxE">'+expBody()+'</div>'};
+function expBody(){var t=totals(),h='<div class="bx"><div class="g3"><div><small>মোট ফান্ড</small><b class="big" style="font-size:19px">'+money(t[0])+'</b></div><div><small>মোট খরচ</small><b class="big" style="font-size:19px;color:var(--bad)">'+money(t[1])+'</b></div><div><small>বর্তমান ফান্ড</small><b class="big" style="font-size:19px;color:var(--ok)">'+money(t[2])+'</b></div></div></div>';
+ if(st.admin)h+='<div class="bx"><h3>➕ খরচ যোগ করুন</h3><select id="exC">'+st.exc.map(function(c){return'<option>'+esc(c)+'</option>'}).join("")+'</select><input id="exW" placeholder="টাকা গ্রহণকারীর নাম"><input id="exI" placeholder="আইডি নম্বর"><input id="exA" type="number" placeholder="টাকার পরিমাণ"><input id="exN" placeholder="বিবরণ (ঐচ্ছিক)"><button class="btn g" data-exa="add">যোগ করুন</button> <button class="btn s n" data-exa="cat">+ নতুন ক্যাটাগরি</button></div>';
+ h+='<div class="ch">'+["সব"].concat(st.exc).map(function(c){return'<button data-exa="f:'+esc(c)+'" class="'+(E.cat===c?"on":"")+'">'+esc(c)+'</button>'}).join("")+'</div>';
+ var l=st.exp2.map(function(x,i){return[x,i]}).filter(function(a){return E.cat==="সব"||a[0].c===E.cat}).reverse();
+ return h+(l.map(function(a){var x=a[0],i=a[1];return'<div class="bx"><div class="row"><b>'+esc(x.c)+'</b><b>'+money(x.a)+'</b></div><small>'+esc(x.w)+' · আইডি '+esc(x.i||"—")+' · '+esc(x.d)+(x.n?" · "+esc(x.n):"")+'</small>'+(x.r?'<div><small>ফেরত: <b>'+money(x.r)+'</b> → নিট খরচ '+money(x.a-x.r)+'</small></div>':"")
+  +(x.p?'<img src="'+x.p+'" style="width:100%;border-radius:10px;margin-top:6px" alt="রসিদ">':"")
+  +(st.admin?'<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><label class="btn s n" style="margin:0;color:var(--ink)">🧾 রসিদ<input type="file" accept="image/*" data-exp="'+i+'" style="display:none"></label><button class="btn s n" data-exa="ret:'+i+'">↩ ফেরত টাকা</button><button class="btn s" style="background:#D83A3A;color:#fff" data-exa="del:'+i+'">🗑</button></div>':"")+'</div>'}).join("")||'<p class="note">কোনো খরচ নেই।</p>')}
+/* ---------- জরুরি যোগাযোগ ---------- */
+X.fxec=function(){return'<div class="fx" id="fxC">'+ecBody()+'</div>'};
+function ecBody(){var h=st.admin?'<button class="btn s n" data-eca="cat">+ নতুন ক্যাটাগরি</button>':"";
+ return h+st.ec2.map(function(c,ci){return'<div class="bx"><h3>'+c.e+' '+esc(c.c)+'</h3>'+(c.i.map(function(x,ii){return'<div class="row" style="gap:6px"><span><b>'+esc(x.n)+'</b><small>'+esc(x.a||"")+(x.p?" · "+esc(x.p):"")+'</small></span>'+(x.p?'<a class="call" href="tel:'+tel(x.p)+'">📞 কল</a>':"")+(st.admin?'<button class="btn s" style="background:#D83A3A;color:#fff" data-eca="di:'+ci+':'+ii+'">🗑</button>':"")+'</div>'}).join("")||'<p class="note">এখনো কোনো নাম যোগ হয়নি।</p>')
+  +(st.admin?'<button class="btn s g" data-eca="add:'+ci+'">+ নাম যোগ</button> <button class="btn s n" data-eca="dc:'+ci+'">ক্যাটাগরি মুছুন</button>':"")+'</div>'}).join("")}
+function redraw(){var a=g("fxE"),b=g("fxC");if(a)a.innerHTML=expBody();if(b)b.innerHTML=ecBody()}
+fd.addEventListener("change",function(e){var t=e.target,i=t.dataset&&t.dataset.exp;if(i===undefined||!t.files[0])return;shrink(t.files[0],function(u){st.exp2[+i].p=u;redraw()})});
+fd.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-exa],[data-eca]");if(!b)return;var d=b.dataset;
+ if(d.exa){var a=d.exa.split(":");
+  if(a[0]==="f")E.cat=d.exa.slice(2);
+  if(a[0]==="cat"){var n=prompt("নতুন ক্যাটাগরির নাম");if(n&&n.trim())st.exc.push(n.trim())}
+  if(a[0]==="add"){var am=+toen(g("exA").value);if(!g("exW").value.trim()||!(am>0)){alert("নাম ও টাকার পরিমাণ দিন");return}st.exp2.push({c:g("exC").value,w:g("exW").value.trim(),i:g("exI").value.trim(),a:am,n:g("exN").value.trim(),d:td(),r:0,p:""})}
+  if(a[0]==="ret"){var x=st.exp2[+a[1]],r=prompt("ফেরত টাকার পরিমাণ (খরচ ৳"+x.a+")",x.r||0);if(r===null)return;r=+toen(r)||0;x.r=Math.max(0,Math.min(x.a,r))}
+  if(a[0]==="del"&&confirm("খরচটি মুছবেন?"))st.exp2.splice(+a[1],1);
+  redraw()}
+ if(d.eca){var k=d.eca.split(":");
+  if(k[0]==="cat"){var n2=prompt("ক্যাটাগরির নাম");if(n2&&n2.trim())st.ec2.push({c:n2.trim(),e:"📞",i:[]})}
+  if(k[0]==="add"){var nm=prompt("নাম / প্রতিষ্ঠান");if(!nm)return;var ph=prompt("ফোন নম্বর")||"",ad=prompt("ঠিকানা (ঐচ্ছিক)")||"";st.ec2[+k[1]].i.push({n:nm.trim(),p:toen(ph.trim()),a:ad.trim()})}
+  if(k[0]==="di")st.ec2[+k[1]].i.splice(+k[2],1);
+  if(k[0]==="dc"&&confirm("পুরো ক্যাটাগরি মুছবেন?"))st.ec2.splice(+k[1],1);
+  redraw()}});
+/* ---------- ফিচার + আইকন ---------- */
+function reg(t,key,emo,a,b,d){var idx=F.length;F.push([bn(idx+1)+". "+t,key]);if(typeof EM!=="undefined")EM.push(emo);
+ var mkb=function(dl){var bt=document.createElement("button");bt.className="ic";bt.style.cssText="--a:"+a+";--b:"+b+";--d:"+dl+"s";bt.innerHTML="<i><span>"+emo+"</span></i>"+t;bt.onclick=function(){st.cur=idx;st.view=-1;st.cw=-1;fdraw()};return bt};
+ var ap2=g("ap"),fg2=g("fg");if(ap2)ap2.appendChild(mkb(d));if(fg2)fg2.appendChild(mkb(d+.3))}
+reg("ফান্ড ও খরচ","fxexp","🧾","#E08A00","#D83A3A",.6);
+reg("জরুরি যোগাযোগ","fxec","📞","#D83A3A","#7A4DE0",.8);
+})();
+</script>
+
+<style id="byc-ui2-css">
+#ap{background:rgba(255,255,255,.14)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;border:1px solid rgba(255,255,255,.5);gap:10px!important;padding:12px 8px!important}
+.ic{filter:none!important;background:rgba(255,255,255,.88)!important;border-radius:22px!important;padding:12px 4px 9px!important;box-shadow:0 6px 16px rgba(20,33,61,.18);text-shadow:none!important;font-size:13px!important;line-height:1.25;text-align:center;gap:7px!important}
+.ic i{width:62px!important;height:62px!important;border-radius:50%!important;font-size:30px!important;border:3px solid #fff;box-shadow:0 6px 12px rgba(20,33,61,.3),0 2px 0 rgba(255,255,255,.5) inset!important}
+.ic:active{transform:scale(.95)}
+</style>
+
+
+<style id="byc-feed2-css">
+.n2 .lp{background:var(--card,#fff);border:1px solid var(--line);border-radius:14px;padding:8px 10px;margin-top:8px}
+.n2 .lp .r{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--line)}.n2 .lp .r:first-child{border-top:0}
+.n2 .lp .a{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;background:linear-gradient(145deg,#7A4DE0,#E2136E);flex-shrink:0;overflow:hidden}.n2 .lp .a img{width:100%;height:100%;object-fit:cover}
+.n2 .bar{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+</style>
+<script id="byc-feed2">
+(function(){
+if(typeof st==="undefined"||typeof fdraw==="undefined"||typeof fd==="undefined")return;
+var open=null;
+function fr(a,b){return st.fr.filter(function(x){return(x.f===a&&x.t===b)||(x.f===b&&x.t===a)})[0]}
+function mem(u){return members.filter(function(m){return m.idn===u})[0]}
+function people(p){var o={};(p.lk||[]).forEach(function(u){(o[u]=o[u]||{u:u,l:0,c:0}).l=1});(p.cm||[]).forEach(function(c){var r=o[c.u]=o[c.u]||{u:c.u,n:c.n,l:0,c:0};r.c++;r.n=c.n});return Object.keys(o).map(function(k){return o[k]})}
+function row(x){var m=mem(x.u),n=m?m.n:(x.u==="admin"?"BYC অ্যাডমিন":x.n||x.u),me=st.me,act="";
+ if(m&&me&&m!==me&&!st.admin){var f=fr(me,m);act=f?(f.s==="ok"?'<span class="note">✔ বন্ধু</span>':'<span class="note">⏳ অপেক্ষমান</span>'):'<button class="btn s g" data-nfr="'+members.indexOf(m)+'">➕ ফ্রেন্ড রিকুয়েস্ট</button>'}
+ return'<div class="r"><div class="a">'+(m&&m.pic?'<img src="'+m.pic+'" alt="">':esc((n||"?").charAt(0)))+'</div><div style="flex:1"><b>'+esc(n)+'</b><small class="note" style="display:block">'+(x.l?"👍 ":"")+(x.c?"💬 "+bn(x.c):"")+'</small></div>'+act+'</div>'}
+function aug(){var r=document.querySelector("#fd .n2,.n2");if(!/feed/.test((F[st.cur]||[])[1]||""))return;
+ [].forEach.call(fd.querySelectorAll("[data-zl]"),function(b){var id=b.dataset.zl,p=st.feed.filter(function(q){return q.id===id})[0];if(!p||b.parentNode.nextSibling&&b.parentNode.nextSibling.className==="bar")return;
+  var bar=document.createElement("div");bar.className="bar";bar.innerHTML='<button class="btn s n" data-nsh="'+id+'">📤 শেয়ার</button><button class="btn s n" data-nlk="'+id+'">👥 কারা লাইক/কমেন্ট করেছে</button>';
+  b.parentNode.parentNode.insertBefore(bar,b.parentNode.nextSibling);
+  if(open===id){var L=people(p),d=document.createElement("div");d.className="lp";d.innerHTML=L.length?L.map(row).join(""):'<p class="note">এখনো কেউ লাইক বা কমেন্ট করেনি।</p>';bar.parentNode.insertBefore(d,bar.nextSibling)}})}
+var _f=fdraw;fdraw=function(){_f.apply(this,arguments);try{aug()}catch(e){}};
+fd.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-nfr],[data-nsh],[data-nlk]");if(!b)return;var d=b.dataset;
+ if(d.nfr!==undefined&&st.me){var t=members[d.nfr];if(t&&!fr(st.me,t))st.fr.push({f:st.me,t:t,s:"p"});fdraw()}
+ if(d.nlk){open=open===d.nlk?null:d.nlk;fdraw()}
+ if(d.nsh){var p=st.feed.filter(function(q){return q.id===d.nsh})[0],tx=((p&&p.x)||"BYC-র পোস্ট")+" — বিরোপাড়া তরুন সংঘ",u=location.href.split("#")[0];
+  if(navigator.share)navigator.share({title:"বিরোপাড়া তরুন সংঘ",text:tx,url:u}).catch(function(){});
+  else window.open("https://wa.me/?text="+encodeURIComponent(tx+" "+u),"_blank")}});
+/* ফটো এনহ্যান্সার আইকন ফিডের ঠিক পরে; পুরনো ঋণ আইকন লুকানো */
+function place(){var ap2=document.getElementById("ap");if(!ap2)return;var ic=[].slice.call(ap2.querySelectorAll(".ic")),f=ic.filter(function(b){return b.textContent.indexOf("পোস্ট ও ফিড")>=0})[0],en=ic.filter(function(b){return b.textContent.indexOf("ফটো এনহ্যান্সার")>=0})[0];
+ if(f&&en)ap2.insertBefore(en,f.nextSibling);
+ ic.forEach(function(b){if(b.textContent.indexOf("ঋণ ও কিস্তি")>=0)b.style.display="none"})}
+place();setTimeout(place,600);
+/* এনহ্যান্স করা ছবি নিজের প্রোফাইল/ফিডে শেয়ার */
+fd.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-enact=toprofile]");if(!b)return;
+ var w=st.admin?{u:"admin",n:"BYC অ্যাডমিন"}:st.me?{u:st.me.idn,n:st.me.n}:null,st2=document.getElementById("enSt");
+ if(!w){if(st2)st2.textContent="শেয়ার করতে লগইন করুন";return}
+ var img=document.querySelector("#enRes img");if(!img)return;var c=document.createElement("canvas"),s=Math.min(1,640/Math.max(img.naturalWidth,img.naturalHeight));c.width=Math.round(img.naturalWidth*s);c.height=Math.round(img.naturalHeight*s);c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+ st.feed.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),u:w.u,n:w.n,x:"✨ ফটো এনহ্যান্সার দিয়ে উন্নত করা ছবি",img:c.toDataURL("image/jpeg",.7),t:Date.now(),lk:[],cm:[]});
+ if(st2)st2.textContent="✔ আপনার প্রোফাইল/ফিডে শেয়ার হয়েছে।"});
 })();
 </script>
 
