@@ -2095,6 +2095,8 @@ header .ck-d b{font:800 13px 'Baloo Da 2',sans-serif;color:var(--ink);display:in
 header .ck-d span{display:inline;opacity:1;color:var(--mut)}
 header .ck-d span:last-child{flex:0 0 100%;color:var(--ember);font-weight:700}
 header .ck-d em{color:inherit}
+.vn video{width:100%;border-radius:14px;background:#000;max-height:60vh;display:block}
+.vn .vw{position:relative}.vn .vg{position:absolute;inset:0;border-radius:14px;pointer-events:none;display:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.65) 100%)}
 
 </style>
 <script id="byc-portal">
@@ -2169,6 +2171,63 @@ fd.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest
  else if(k==="id"){st.exp[+a[1]].items.splice(+a[2],1)}
  redraw()});
 sync();
+})();
+/* ---------- ভিডিও এনহ্যান্সার (ফ্রি, ফোনেই প্রসেস) ---------- */
+(function(){
+if(typeof F==="undefined"||typeof X==="undefined"||typeof fd==="undefined"||typeof st==="undefined")return;
+var g=function(i){return document.getElementById(i)};
+var PR={auto:[6,10,12,"",0],night:[30,12,12,"",0],vivid:[2,14,38,"",0],hdr:[0,28,24,"",0],bw:[0,20,0,"grayscale(1)",0],sepia:[2,8,0,"sepia(.85)",0],warm:[3,6,10,"sepia(.25) hue-rotate(-8deg)",0],cool:[0,6,8,"hue-rotate(12deg)",0],fade:[6,-12,-15,"",0],vig:[0,14,14,"sepia(.2)",1]};
+var CH=[["auto","✨ অটো"],["night","🌙 কম আলো"],["vivid","🌈 রঙিন"],["hdr","🔆 HDR"],["bw","⚫ সাদা-কালো"],["sepia","🟤 সেপিয়া"],["warm","🔥 উষ্ণ"],["cool","❄️ শীতল"],["fade","🌫️ ফেড"],["vig","🎞️ ভিনটেজ"]];
+var SLV=[["b","উজ্জ্বলতা"],["c","কনট্রাস্ট"],["s","রঙের তেজ"]];
+var V={url:"",file:null,mode:"auto",b:0,c:0,s:0,res:null,busy:false};
+function cur(){var p=PR[V.mode]||[0,0,0,"",0];return{f:"brightness("+((100+p[0]+V.b)/100).toFixed(2)+") contrast("+((100+p[1]+V.c)/100).toFixed(2)+") saturate("+Math.max(0,(100+p[2]+V.s)/100).toFixed(2)+") "+p[3],vig:p[4]}}
+function apply(){var v=g("vnV"),k=cur(),o=g("vnG");if(v)v.style.filter=k.f;if(o)o.style.display=k.vig?"block":"none"}
+function say(t){var e=g("vnSt");if(e)e.textContent=t||""}
+function resHtml(){if(!V.res)return"";var u=V.res.u;return'<div class="res"><video src="'+u+'" controls playsinline></video><div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a class="btn g" style="text-decoration:none" href="'+u+'" download="'+V.res.n+'">💾 সংরক্ষণ</a><button class="btn n" data-vact="share">📤 শেয়ার</button></div></div>'}
+function shell(){var h='<p class="note">অন্ধকার বা ফ্যাকাশে ভিডিও উজ্জ্বল ও রঙিন করুন। ভিডিও আপনার ফোনেই প্রসেস হয় — কোথাও আপলোড হয় না, সম্পূর্ণ ফ্রি।</p><label class="drop"><span style="font-size:38px">🎬</span><b>'+(V.url?"অন্য ভিডিও বাছুন":"ভিডিও বাছুন")+'</b><span>গ্যালারি বা ক্যামেরা থেকে</span><input type="file" accept="video/*" id="vnF" style="display:none"></label><p class="note" id="vnSt" role="status"></p>';
+ if(!V.url)return h;
+ h+='<div class="chips">'+CH.map(function(c){return'<button data-vact="preset:'+c[0]+'" class="'+(V.mode===c[0]?"on":"")+'">'+c[1]+'</button>'}).join("")+'</div><div class="vw"><video id="vnV" src="'+V.url+'" controls playsinline></video><div class="vg" id="vnG"></div></div><p class="note">উপরের প্রিভিউতে প্রভাব দেখুন, তারপর সংরক্ষণ করুন।</p>';
+ SLV.forEach(function(s){h+='<div class="sl"><label for="vnS_'+s[0]+'">'+s[1]+'</label><input type="range" id="vnS_'+s[0]+'" data-vk="'+s[0]+'" min="-50" max="50" value="'+V[s[0]]+'"><output id="vnO_'+s[0]+'">'+V[s[0]]+'</output></div>'});
+ return h+'<button class="btn g" data-vact="make">⬇️ এনহ্যান্স করে তৈরি করুন</button> <button class="btn n" data-vact="reset">↺ রিসেট</button><p class="note">তৈরি করতে ভিডিওর সমান সময় লাগে, শেষ না হওয়া পর্যন্ত অ্যাপ খোলা রাখুন। Chrome-এ সবচেয়ে ভালো চলে।</p><div id="vnRes">'+resHtml()+'</div>'}
+X.venh=function(){return'<div class="en vn" id="vnRoot">'+shell()+'</div>'};
+function draw(){var r=g("vnRoot");if(r){r.innerHTML=shell();apply()}}
+var _fv=fdraw;fdraw=function(){_fv.apply(this,arguments);var f=F[st.cur];if(f&&f[1]==="venh")apply()};
+function clearRes(){if(V.res){URL.revokeObjectURL(V.res.u);V.res=null}var e=g("vnRes");if(e)e.innerHTML=""}
+fd.addEventListener("change",function(e){var t=e.target;if(t.id!=="vnF"||!t.files[0]||!g("vnRoot"))return;
+ if(V.url)URL.revokeObjectURL(V.url);clearRes();V.file=t.files[0];V.url=URL.createObjectURL(V.file);V.mode="auto";V.b=V.c=V.s=0;t.value="";draw()});
+fd.addEventListener("input",function(e){var t=e.target,k=t.dataset&&t.dataset.vk;if(!k||!g("vnRoot"))return;V[k]=+t.value;V.mode=V.mode;var o=g("vnO_"+k);if(o)o.textContent=t.value;apply()});
+fd.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-vact]");if(!b||!g("vnRoot"))return;var a=b.dataset.vact;
+ if(a.indexOf("preset:")===0){V.mode=a.slice(7);V.b=V.c=V.s=0;draw()}
+ else if(a==="reset"){V.mode="auto";V.b=V.c=V.s=0;draw()}
+ else if(a==="make")make();
+ else if(a==="share"&&V.res){var f=new File([V.res.b],V.res.n,{type:V.res.b.type});if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f],title:"BYC ভিডিও"}).catch(function(){});else say("এই ডিভাইসে সরাসরি শেয়ার চলছে না, “সংরক্ষণ” চাপুন।")}});
+function make(){
+ if(V.busy||!V.url)return;
+ if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){say("এই ব্রাউজারে ভিডিও তৈরি হচ্ছে না। Chrome ব্যবহার করুন।");return}
+ var ev=document.createElement("video"),k=cur();ev.playsInline=true;ev.preload="auto";ev.src=V.url;V.busy=true;clearRes();say("প্রস্তুত হচ্ছে…");
+ ev.onerror=function(){V.busy=false;say("ভিডিওটি খোলা যায়নি।")};
+ ev.onloadedmetadata=function(){
+  var w=ev.videoWidth,h=ev.videoHeight,s=Math.min(1,1280/Math.max(w,h)),cw=Math.max(2,Math.round(w*s/2)*2),ch=Math.max(2,Math.round(h*s/2)*2),c=document.createElement("canvas");c.width=cw;c.height=ch;
+  var x=c.getContext("2d");if(!("filter" in x)){V.busy=false;say("এই ব্রাউজারে ফিল্টার চলছে না। Chrome ব্যবহার করুন।");return}
+  var cs=c.captureStream(30),ac=null;
+  try{var AC=window.AudioContext||window.webkitAudioContext;ac=new AC();var src=ac.createMediaElementSource(ev),ds=ac.createMediaStreamDestination();src.connect(ds);ds.stream.getAudioTracks().forEach(function(t){cs.addTrack(t)});if(ac.resume)ac.resume()}catch(_){}
+  var ms=["video/mp4;codecs=avc1","video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"],m="";for(var i=0;i<ms.length;i++)if(MediaRecorder.isTypeSupported(ms[i])){m=ms[i];break}
+  var rec,parts=[];try{rec=new MediaRecorder(cs,m?{mimeType:m,videoBitsPerSecond:4000000}:{videoBitsPerSecond:4000000})}catch(_){V.busy=false;say("রেকর্ডার চালু করা যায়নি।");return}
+  rec.ondataavailable=function(q){if(q.data&&q.data.size)parts.push(q.data)};
+  rec.onstop=function(){V.busy=false;if(ac)try{ac.close()}catch(_){}var bl=new Blob(parts,{type:(rec.mimeType||m||"video/webm").split(";")[0]});
+   V.res={u:URL.createObjectURL(bl),b:bl,n:"BYC-video-enhanced."+(bl.type.indexOf("mp4")>=0?"mp4":"webm")};var r=g("vnRes");if(r)r.innerHTML=resHtml();say("✔ ভিডিও তৈরি হয়েছে।")};
+  function d(){x.filter=k.f;x.drawImage(ev,0,0,cw,ch);x.filter="none";
+   if(k.vig){var gr=x.createRadialGradient(cw/2,ch/2,Math.min(cw,ch)*.3,cw/2,ch/2,Math.max(cw,ch)*.75);gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(1,"rgba(0,0,0,.65)");x.fillStyle=gr;x.fillRect(0,0,cw,ch)}
+   if(ev.duration)say("প্রসেসিং চলছে… "+bn(Math.min(99,Math.round(ev.currentTime/ev.duration*100)))+"% (অ্যাপ খোলা রাখুন)");
+   if(!ev.ended&&V.busy)requestAnimationFrame(d)}
+  ev.onended=function(){setTimeout(function(){if(rec.state!=="inactive")rec.stop()},400)};
+  rec.start(500);ev.play().then(function(){requestAnimationFrame(d)}).catch(function(){try{rec.stop()}catch(_){}V.busy=false;say("ভিডিও চালু করা যায়নি, আবার চেষ্টা করুন।")})}}
+/* ফিচার + আইকন (ফটো এনহ্যান্সারের পাশে) */
+var idx=F.length;F.push([bn(idx+1)+". ভিডিও এনহ্যান্সার","venh"]);if(typeof EM!=="undefined")EM.push("🎬");
+function icon(d){var b=document.createElement("button");b.className="ic";b.style.cssText="--a:#7A4DE0;--b:#E2136E;--d:"+d+"s";b.innerHTML="<i><span>🎬</span></i>ভিডিও এনহ্যান্সার";b.onclick=function(){st.cur=idx;st.view=-1;st.cw=-1;fdraw()};return b}
+var ap2=g("ap"),fg2=g("fg"),ph=ap2&&[].slice.call(ap2.querySelectorAll(".ic")).filter(function(x){return x.textContent.indexOf("ফটো এনহ্যান্সার")>=0})[0];
+if(ap2)ap2.insertBefore(icon(.1),ph?ph.nextSibling:ap2.firstChild);
+if(fg2)fg2.appendChild(icon(.5));
 })();
 
 </script>
